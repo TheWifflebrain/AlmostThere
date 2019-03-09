@@ -2,6 +2,7 @@ package com.example.almostthere;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -99,6 +100,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient;
     //private PlaceInfo mPlace;
     private static final int ERROR_DIALOG_REQUEST = 9001;
+    private ImageView buttonSettings;
 
     public boolean isServicesOK() {
         Log.d(TAG, "isServicesOK: checking google services version");
@@ -126,6 +128,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         //mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gsp);
+        buttonSettings = (ImageView) findViewById(R.id.settingsIV);
 
         if (isServicesOK()) {
             getLocationPermission();
@@ -142,6 +145,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked gps icon");
                 getDeviceLocation();
+            }
+        });
+
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked settings icon");
+                Intent intent = new Intent(MapActivity.this, SettingsActivity.class);
+                startActivity(intent);
             }
         });
 
