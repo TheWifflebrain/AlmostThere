@@ -3,6 +3,7 @@ package com.example.almostthere;
 public class Destination {
     private Location endPoint;
     private float radius;
+    private String destAddress;
 
     public Destination(Location endPoint, float radius) {
         this.endPoint = endPoint;
@@ -24,4 +25,14 @@ public class Destination {
     public void setRadius(float radius) {
         this.radius = radius;
     }
+
+    public String getAddress() {
+        return destAddress;
+    }
+
+    public void setAddress(String address) {
+        this.destAddress = address;
+    }
+
+
 }
