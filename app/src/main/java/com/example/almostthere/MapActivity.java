@@ -101,6 +101,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //private PlaceInfo mPlace;
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private ImageView buttonSettings;
+    private ImageView setPin;
 
     public boolean isServicesOK() {
         Log.d(TAG, "isServicesOK: checking google services version");
@@ -129,6 +130,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gsp);
         buttonSettings = (ImageView) findViewById(R.id.settingsIV);
+        setPin = (ImageView) findViewById(R.id.ic_set);
 
         if (isServicesOK()) {
             getLocationPermission();
