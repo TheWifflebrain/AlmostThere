@@ -190,9 +190,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             .position(view);
                     mMap.addMarker(options);
                 }
-                }
+                endLatitude = view.latitude;
+                endLongitude = view.longitude;
+
+                Log.d(TAG, "endLat" + endLatitude + "    endLong:" + endLongitude);
+                //LocationController gettingDistance = new LocationController();
+                //String url = gettingDistance.makeDistanceURL(startLatitude, startLongitude, endLatitude, endLongitude);
+
+            }
+            //Location.distanceBetween()
 
         });
+
+        setPin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked distance icon");
+                float results[] = new float[10];
+                Location.distanceBetween(startLongitude, startLatitude, endLongitude, endLatitude, results);
+                double mileDistance = results[0]*.000621371;
+                Toast.makeText(MapActivity.this, "Distance in Miles : " + mileDistance , Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         hideSoftKeyboard();
     }
@@ -214,6 +234,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             Location currentLocation = (Location) task.getResult();
                             currentLocation.setLongitude(currentLocation.getLongitude());
                             currentLocation.setLatitude(currentLocation.getLatitude());
+                            startLatitude = currentLocation.getLatitude();
+                            startLongitude = currentLocation.getLongitude();
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM,
                                     "My Location");
