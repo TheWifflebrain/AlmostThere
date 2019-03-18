@@ -99,7 +99,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
 
@@ -209,7 +209,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 float results[] = new float[10];
                 Location.distanceBetween(startLongitude, startLatitude, endLongitude, endLatitude, results);
                 double mileDistance = results[0]*.000621371;
-                Toast.makeText(MapActivity.this, "Distance in Miles : " + mileDistance , Toast.LENGTH_SHORT).show();
+                String stringDistance = String.format("%.3f", mileDistance);
+                //setContentView(R.layout.distanceLeft);
+                TextView textView = (TextView) findViewById(R.id.distanceLeft);
+                textView.setText("Distance in Miles: " + stringDistance);
+
+                //Toast.makeText(MapActivity.this, "Distance in Miles : " + mileDistance , Toast.LENGTH_SHORT).show();
             }
         });
 
