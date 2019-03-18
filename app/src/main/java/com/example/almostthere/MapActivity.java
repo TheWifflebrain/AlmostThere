@@ -90,6 +90,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private double endLongitude;
     private double endLatitude;
 
+    MarkerOptions options = null;
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -175,11 +177,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng view) {
-                    Log.d(TAG, "onClick: clicked settings icon");
-                    MarkerOptions options = new MarkerOptions()
+                if(options == null) {
+                    Log.d(TAG, "onClick: added pin");
+                    options = new MarkerOptions()
                             .position(view);
                     mMap.addMarker(options);
                 }
+                else{
+                    mMap.clear();
+                    options = null;
+                    options = new MarkerOptions()
+                            .position(view);
+                    mMap.addMarker(options);
+                }
+                }
+
         });
 
         hideSoftKeyboard();
