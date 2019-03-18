@@ -208,7 +208,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Log.d(TAG, "onClick: clicked distance icon");
                 float results[] = new float[10];
                 Location.distanceBetween(startLongitude, startLatitude, endLongitude, endLatitude, results);
-                double mileDistance = results[0]*.000621371;
+                double mileDistance;
+                if (results[1] < 0) {
+                    mileDistance = (results[0] + Math.abs(results[1]) + Math.abs(results[2]))*.000621371;
+                }
+                else{
+                    mileDistance = (results[0] + results[1] + results [2])*.000621371;
+                }
+
+                Log.d(TAG, results[0] + "   " + results[1] + "   " + results[2] + "   " + results[3] + "   " +
+                        results[4] + "   " + results[5] + "   " + results[6] + "   " + results[7]);
                 String stringDistance = String.format("%.3f", mileDistance);
                 //setContentView(R.layout.distanceLeft);
                 TextView textView = (TextView) findViewById(R.id.distanceLeft);
