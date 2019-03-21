@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -72,6 +73,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //widgets
     private AutoCompleteTextView mSearchText;
     private ImageView mGps;
+    private ImageView breakPin;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -98,6 +100,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     MarkerOptions options = null;
+
+    public MapActivity() {
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -153,6 +158,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mGps = (ImageView) findViewById(R.id.ic_gsp);
         buttonSettings = (ImageView) findViewById(R.id.settingsIV);
         setPin = (ImageView) findViewById(R.id.ic_set);
+        breakPin = (ImageView) findViewById(R.id.ic_break);
 
         if (isServicesOK()) {
             getLocationPermission();
@@ -243,6 +249,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if(newDistance > 0.001) {
                     handler.postDelayed(runnable, 3000);
                 }
+            }
+        });
+
+        breakPin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked break pin icon");
+                newDistance = 0.0;
+                options = null;
+                endLatitude = startLatitude;
+                endLongitude = startLongitude;
+                mMap.clear();
+                updateDistanceUI();
             }
         });
 
