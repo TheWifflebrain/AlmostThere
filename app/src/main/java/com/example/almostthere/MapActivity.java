@@ -94,6 +94,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private double endLongitude;
     private double endLatitude;
     private Handler handler = new Handler();
+    double newDistance = 0.0;
 
 
     MarkerOptions options = null;
@@ -157,6 +158,32 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             getLocationPermission();
         }
 
+
+        Log.i(TAG, "Repeating updating the distance for new distance: " + newDistance);
+        if(newDistance > 0.001){
+            Thread t = new Thread(){
+                //@Override
+                public void run() {
+                    while (!isInterrupted()) {
+                        try {
+                            Thread.sleep(2000);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.i(TAG, "Repeating updating the distance");
+                                    updateDistanceUI();
+                                }
+                            });
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+            t.start();
+        }
+
     }
 
     private void init() {
@@ -218,7 +245,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void updateDistanceUI(){
-        double newDistance = CalculationByDistance(startLatitude, startLongitude, endLatitude, endLongitude);
+        newDistance = CalculationByDistance(startLatitude, startLongitude, endLatitude, endLongitude);
         String stringDistance = String.format("%.3f", newDistance);
         TextView textView = (TextView) findViewById(R.id.distanceLeft);
         textView.setText("Distance in Miles: " + stringDistance);
