@@ -218,7 +218,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             .position(view);
                     mMap.addMarker(options);
                     Log.d(TAG, "new distance equals: " + newDistance);
-                    handler.postDelayed(runnable, 3000);
                 }
                 else{
                     mMap.clear();
@@ -241,6 +240,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked distance icon");
                 updateDistanceUI();
+                if(newDistance > 0.001) {
+                    handler.postDelayed(runnable, 3000);
+                }
             }
         });
 
@@ -251,7 +253,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         public void run() {
             Log.i(TAG, "Actually in the new runnable new distance: " + newDistance);
             updateDistanceUI();
-            handler.postDelayed(this, 3000);
+            if(newDistance > 0.001) {
+                handler.postDelayed(this, 3000);
+            }
         }
     };
 
