@@ -158,7 +158,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             getLocationPermission();
         }
 
-
+/*
         Log.i(TAG, "Repeating updating the distance for new distance: " + newDistance);
         if(newDistance > 0.001){
             Thread t = new Thread(){
@@ -183,6 +183,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             };
             t.start();
         }
+
+        */
 
     }
 
@@ -215,6 +217,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     options = new MarkerOptions()
                             .position(view);
                     mMap.addMarker(options);
+                    Log.d(TAG, "new distance equals: " + newDistance);
+                    handler.postDelayed(runnable, 3000);
                 }
                 else{
                     mMap.clear();
@@ -227,11 +231,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 endLongitude = view.longitude;
 
                 Log.d(TAG, "endLat" + endLatitude + "    endLong:" + endLongitude);
-                //LocationController gettingDistance = new LocationController();
-                //String url = gettingDistance.makeDistanceURL(startLatitude, startLongitude, endLatitude, endLongitude);
 
             }
-            //Location.distanceBetween()
 
         });
 
@@ -242,7 +243,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 updateDistanceUI();
             }
         });
+
     }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.i(TAG, "Actually in the new runnable new distance: " + newDistance);
+            updateDistanceUI();
+            handler.postDelayed(this, 3000);
+        }
+    };
 
     public void updateDistanceUI(){
         newDistance = CalculationByDistance(startLatitude, startLongitude, endLatitude, endLongitude);
