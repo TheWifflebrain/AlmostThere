@@ -285,8 +285,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         @Override
         public void run() {
             Log.i(TAG, "Actually in the new runnable new distance: " + newDistance);
-            updateDistanceUI();
+
             if(newDistance > 0.001) {
+                getDeviceLocation();
+                updateDistanceUI();
                 handler.postDelayed(this, 3000);
             }
         }
