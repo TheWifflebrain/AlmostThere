@@ -73,6 +73,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //widgets
     private AutoCompleteTextView mSearchText;
     private ImageView mGps;
+    private ImageView dGps;
     private ImageView breakPin;
 
     //vars
@@ -159,6 +160,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         buttonSettings = (ImageView) findViewById(R.id.settingsIV);
         setPin = (ImageView) findViewById(R.id.ic_set);
         breakPin = (ImageView) findViewById(R.id.ic_break);
+        dGps = (ImageView) findViewById(R.id.ic_locateFinalDestination);
 
         if (isServicesOK()) {
             getLocationPermission();
@@ -203,6 +205,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked gps icon");
                 getDeviceLocation();
+            }
+        });
+
+        dGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked dgps icon");
+                if(endLongitude != 0.000000) {
+                    moveCamera(new LatLng(endLatitude, endLongitude),
+                            DEFAULT_ZOOM,
+                            "Desination Location");
+                }
             }
         });
 
