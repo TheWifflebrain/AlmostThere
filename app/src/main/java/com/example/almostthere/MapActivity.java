@@ -46,12 +46,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+//import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.android.libraries.places.internal.lf.r;
+import static java.lang.Math.abs;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener{
@@ -79,7 +82,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private ImageView buttonSettings;
 
-    Location location;
+    //Location location;
     private ImageView setPin;
     private double longitude;
     private double latitude;
@@ -186,7 +189,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 else{
                     mMap.clear();
                     options = null;
-                    options = new MarkerOptions()
+                   options = new MarkerOptions()
                             .position(view);
                     mMap.addMarker(options);
                 }
@@ -206,29 +209,65 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked distance icon");
-                float results[] = new float[10];
-                Location.distanceBetween(startLongitude, startLatitude, endLongitude, endLatitude, results);
-                double mileDistance;
-                if (results[1] < 0) {
-                    mileDistance = (results[0] + Math.abs(results[1]) + Math.abs(results[2]))*.000621371;
-                }
-                else{
-                    mileDistance = (results[0] + results[1] + results [2])*.000621371;
-                }
+                //float results[] = new float[10];
+                //Location.distanceBetween(startLongitude, startLatitude, endLongitude, endLatitude, results);
+                //double mileDistance;
+                //if (results[1] < 0) {
+                 //   mileDistance = (results[0] + abs(results[1]) + abs(results[2]))*.000621371;
+               // }
+                //else{
+                 //   mileDistance = (results[0] + results[1] + results [2])*.000621371;
+                //}
 
-                Log.d(TAG, results[0] + "   " + results[1] + "   " + results[2] + "   " + results[3] + "   " +
-                        results[4] + "   " + results[5] + "   " + results[6] + "   " + results[7]);
-                String stringDistance = String.format("%.3f", mileDistance);
+                //Log.d(TAG, results[0] + "   " + results[1] + "   " + results[2] + "   " + results[3] + "   " +
+                  //      results[4] + "   " + results[5] + "   " + results[6] + "   " + results[7]);
+                //String stringDistance = String.format("%.3f", mileDistance);
+
+                //setContentView(R.layout.distanceLeft);
+                //TextView textView = (TextView) findViewById(R.id.distanceLeft);
+                //textView.setText("Distance in Miles: " + stringDistance);
+
+                //float formulaDistance = (float) abs((Math.cos(startLongitude-endLongitude)*(69.172)));
+
+
+                //Toast.makeText(MapActivity.this, "Distance in Miles : " + mileDistance , Toast.LENGTH_SHORT).show();
+
+
+                //NEW IDEA FOR DISTANCE
+                double newDistance = CalculationByDistance(startLatitude, startLongitude, endLatitude, endLongitude);
+                String stringDistance = String.format("%.3f", newDistance);
                 //setContentView(R.layout.distanceLeft);
                 TextView textView = (TextView) findViewById(R.id.distanceLeft);
                 textView.setText("Distance in Miles: " + stringDistance);
 
-                //Toast.makeText(MapActivity.this, "Distance in Miles : " + mileDistance , Toast.LENGTH_SHORT).show();
             }
         });
 
 
         hideSoftKeyboard();
+    }
+
+    public double CalculationByDistance(double startLat, double startLong, double endLat, double endLong) {
+        int Radius=6371;//radius of earth in Km
+        double lat1 = startLat;
+        double lat2 = endLat;
+        double lon1 = startLong;
+        double lon2 = endLong;
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLon = Math.toRadians(lon2-lon1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon/2) * Math.sin(dLon/2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult= Radius*c;
+        double km=valueResult/1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec =  Integer.valueOf(newFormat.format(km));
+        double meter=valueResult%1000;
+        int  meterInDec= Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value",""+valueResult+"   KM  "+kmInDec+" Meter   "+meterInDec);
+
+        return ((Radius * c)/1.609);
     }
 
     private void getDeviceLocation() {
