@@ -8,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -92,6 +93,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private double endLongitude;
     private double endLatitude;
+    private Handler handler = new Handler();
+
 
     MarkerOptions options = null;
 
@@ -209,42 +212,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked distance icon");
-                //float results[] = new float[10];
-                //Location.distanceBetween(startLongitude, startLatitude, endLongitude, endLatitude, results);
-                //double mileDistance;
-                //if (results[1] < 0) {
-                 //   mileDistance = (results[0] + abs(results[1]) + abs(results[2]))*.000621371;
-               // }
-                //else{
-                 //   mileDistance = (results[0] + results[1] + results [2])*.000621371;
-                //}
-
-                //Log.d(TAG, results[0] + "   " + results[1] + "   " + results[2] + "   " + results[3] + "   " +
-                  //      results[4] + "   " + results[5] + "   " + results[6] + "   " + results[7]);
-                //String stringDistance = String.format("%.3f", mileDistance);
-
-                //setContentView(R.layout.distanceLeft);
-                //TextView textView = (TextView) findViewById(R.id.distanceLeft);
-                //textView.setText("Distance in Miles: " + stringDistance);
-
-                //float formulaDistance = (float) abs((Math.cos(startLongitude-endLongitude)*(69.172)));
-
-
-                //Toast.makeText(MapActivity.this, "Distance in Miles : " + mileDistance , Toast.LENGTH_SHORT).show();
-
-
-                //NEW IDEA FOR DISTANCE
-                double newDistance = CalculationByDistance(startLatitude, startLongitude, endLatitude, endLongitude);
-                String stringDistance = String.format("%.3f", newDistance);
-                //setContentView(R.layout.distanceLeft);
-                TextView textView = (TextView) findViewById(R.id.distanceLeft);
-                textView.setText("Distance in Miles: " + stringDistance);
-
+                updateDistanceUI();
             }
         });
+    }
 
-
-        hideSoftKeyboard();
+    public void updateDistanceUI(){
+        double newDistance = CalculationByDistance(startLatitude, startLongitude, endLatitude, endLongitude);
+        String stringDistance = String.format("%.3f", newDistance);
+        TextView textView = (TextView) findViewById(R.id.distanceLeft);
+        textView.setText("Distance in Miles: " + stringDistance);
     }
 
     public double CalculationByDistance(double startLat, double startLong, double endLat, double endLong) {
@@ -264,6 +241,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         return valueResult;
     }
+
+
 
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
