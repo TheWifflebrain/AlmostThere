@@ -270,12 +270,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked break pin icon");
-                newDistance = 0.0;
-                options = null;
-                endLatitude = startLatitude;
-                endLongitude = startLongitude;
-                mMap.clear();
-                updateDistanceUI();
+                if(options != null) {
+                    newDistance = 0.0;
+                    options = null;
+                    endLatitude = startLatitude;
+                    endLongitude = startLongitude;
+                    mMap.clear();
+                    updateDistanceUI();
+                }
             }
         });
 
