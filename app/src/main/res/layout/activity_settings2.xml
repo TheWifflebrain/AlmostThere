@@ -28,6 +28,7 @@
         android:layout_height="59dp"
         android:layout_marginTop="81dp"
         android:layout_marginBottom="581dp"
+        android:inputType="numberDecimal"
         android:hint="0.25"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -78,6 +79,7 @@
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="TextViewEdits"
         tools:text="Choose Alarm" />
+
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
