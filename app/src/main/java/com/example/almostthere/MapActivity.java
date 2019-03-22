@@ -229,8 +229,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked settings icon");
-                Intent intent = new Intent(MapActivity.this, SettingsActivity.class);
-                startActivity(intent);
+                    Intent intent = new Intent(MapActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+
             }
         });
 
@@ -432,12 +433,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    @Override
-    public void onResume()
-    {  // After a pause OR at startup
-        super.onResume();
-        //Refresh your stuff here
-    }
+
+
 
 }
 
