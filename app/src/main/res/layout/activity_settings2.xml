@@ -22,6 +22,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/txtRadius"
+        android:layout_width="123dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="81dp"
+        android:layout_marginBottom="581dp"
+        android:hint="0.25"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.944"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <TextView
         android:id="@+id/txtChooseRadius"
         android:layout_width="203dp"
@@ -38,15 +53,16 @@
         app:layout_constraintHorizontal_bias="0.173"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.129"
+        app:layout_constraintVertical_bias="0.168"
         tools:ignore="TextViewEdits"
         tools:text="Choose Radius" />
 
     <TextView
         android:id="@+id/txtChooseAlarm"
         android:layout_width="195dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="392dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginBottom="372dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@string/choose_alarm"
@@ -58,6 +74,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.166"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtChooseRadius"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="TextViewEdits"
         tools:text="Choose Alarm" />
 

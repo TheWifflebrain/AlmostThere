@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.util.Set;
 
 public class SettingsActivity extends AppCompatActivity {
     private ImageView buttonBack;
+    private EditText setRadius;
     private static final String TAG = "SettingsActivity";
 
 
@@ -19,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings2);
         buttonBack = (ImageView) findViewById(R.id.backToMain);
+        setRadius = (EditText) findViewById(R.id.txtRadius);
 
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
