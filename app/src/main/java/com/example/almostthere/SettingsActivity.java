@@ -18,16 +18,36 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings2);
-        //buttonBack = (ImageView) findViewById(R.id.backToMain);
+        buttonBack = (ImageView) findViewById(R.id.backToMain);
 
-//        buttonBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "onClick: clicked settings icon");
-//                Intent intent = new Intent(SettingsActivity.this, MapActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked settings icon");
+
+                String result = "bye";
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result",result);
+                setResult(RESULT_OK,returnIntent);
+                finish();
+
+                //Intent returnIntent = new Intent();
+                //setResult(RESULT_CANCELED, returnIntent);
+                //finish();
+            }
+
+
+
+        });
+    }
+
+    public void refreshActivity() {
+        Intent i = new Intent(this, MapActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        finish();
+
     }
 
 }
