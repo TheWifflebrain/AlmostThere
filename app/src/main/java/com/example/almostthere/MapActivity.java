@@ -265,9 +265,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked distance icon");
-                updateDistanceUI();
-                if(newDistance > 0.001) {
-                    handler.postDelayed(runnable, 3000);
+                if(options != null) {
+                    updateDistanceUI();
+                    if (newDistance > 0.001) {
+                        handler.postDelayed(runnable, 3000);
+                    }
                 }
             }
         });
