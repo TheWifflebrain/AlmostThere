@@ -98,6 +98,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private double endLatitude;
     private Handler handler = new Handler();
     double newDistance = 0.0;
+    Boolean setCamera = true;
+    Boolean setMoveToCurrentLocation = true;
 
 
     MarkerOptions options = null;
@@ -117,7 +119,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         if (mLocationPermissionsGranted) {
-            getDeviceLocation();
+            getDeviceLocation(setCamera = true);
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
@@ -200,11 +202,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.d(TAG, "init: initializing");
 
 
+
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setMoveToCurrentLocation = true;
                 Log.d(TAG, "onClick: clicked gps icon");
-                getDeviceLocation();
+                getDeviceLocation(setCamera = true);
             }
         });
 
@@ -212,6 +216,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked dgps icon");
+                setMoveToCurrentLocation = false;
                 if(endLongitude != 0.000000) {
                     moveCamera(new LatLng(endLatitude, endLongitude),
                             DEFAULT_ZOOM,
@@ -289,7 +294,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Log.i(TAG, "Actually in the new runnable new distance: " + newDistance);
 
             if(newDistance > 0.001) {
-                getDeviceLocation();
+                if(setMoveToCurrentLocation == true){
+                    getDeviceLocation(setCamera = true);
+                }
+                else{
+                    getDeviceLocation(setCamera = false);
+                }
                 updateDistanceUI();
                 handler.postDelayed(this, 3000);
             }
@@ -323,7 +333,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
-    private void getDeviceLocation() {
+    private void getDeviceLocation(final Boolean setCamera) {
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -342,9 +352,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             currentLocation.setLatitude(currentLocation.getLatitude());
                             startLatitude = currentLocation.getLatitude();
                             startLongitude = currentLocation.getLongitude();
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                    DEFAULT_ZOOM,
-                                    "My Location");
+                            if(setCamera == true) {
+                                moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                                        DEFAULT_ZOOM,
+                                        "My Location");
+                            }
 
                         } else {
                             Log.d(TAG, "onComplete: current location is null");
@@ -364,12 +376,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-
         private void initMap() {
         Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(MapActivity.this);
+
     }
 
     private void getLocationPermission() {
@@ -414,13 +426,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     mLocationPermissionsGranted = true;
                     //initialize our map
                     initMap();
+
                 }
             }
         }
     }
 
-    private void hideSoftKeyboard() {
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
 }
 
