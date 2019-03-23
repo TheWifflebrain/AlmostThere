@@ -3,6 +3,7 @@ package com.example.almostthere;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -100,6 +101,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     double newDistance = 0.0;
     Boolean setCamera = true;
     Boolean setMoveToCurrentLocation = true;
+    public String radiusString = "0.25";
 
 
     MarkerOptions options = null;
@@ -163,6 +165,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setPin = (ImageView) findViewById(R.id.ic_set);
         breakPin = (ImageView) findViewById(R.id.ic_break);
         dGps = (ImageView) findViewById(R.id.ic_locateFinalDestination);
+
+        Intent intent = getIntent();
+        radiusString = intent.getStringExtra("message");
 
         if (isServicesOK()) {
             getLocationPermission();
@@ -271,6 +276,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         handler.postDelayed(runnable, 3000);
                     }
                 }
+
             }
         });
 
