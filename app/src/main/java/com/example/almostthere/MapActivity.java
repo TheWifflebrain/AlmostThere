@@ -254,8 +254,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Log.d(TAG, "onClick: clicked distance icon");
                 if(options != null) {
                     updateDistanceUI();
-                    if (newDistance > 0.001) {
+                    if (newDistance > 0.001 && newDistance > radiusD) {
                         handler.postDelayed(runnable, 3000);
+                    }
+                    else{
+                        Log.d(TAG, "Stopped repeating function 2");
                     }
                 }
 
@@ -295,7 +298,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     getDeviceLocation(setCamera = false);
                 }
                 updateDistanceUI();
-                handler.postDelayed(this, 3000);
+
+                if(newDistance > radiusD && newDistance > 0.0001) {
+                    Log.d(TAG, "repeating function");
+                    handler.postDelayed(this, 3000);
+                }
+                else{
+                    Log.d(TAG, "not repeating function");
+                }
             }
         }
     };
