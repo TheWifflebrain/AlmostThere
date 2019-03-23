@@ -2,6 +2,7 @@ package com.example.almostthere;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -101,7 +102,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     double newDistance = 0.0;
     Boolean setCamera = true;
     Boolean setMoveToCurrentLocation = true;
-    public String radiusString = "0.25";
+
+    SharedPreferences shared;
+    public String radiusS = "0.25";
+    public Double radiusD = 0.25;
+
+    public static final String RADIUS_SETTINGS = "RADIUS_SETTINGS";
+    public static final String APP_PREFS = "APPLICATION_PREFERENCES";
 
 
     MarkerOptions options = null;
@@ -165,9 +172,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setPin = (ImageView) findViewById(R.id.ic_set);
         breakPin = (ImageView) findViewById(R.id.ic_break);
         dGps = (ImageView) findViewById(R.id.ic_locateFinalDestination);
-
-        Intent intent = getIntent();
-        radiusString = intent.getStringExtra("message");
 
         if (isServicesOK()) {
             getLocationPermission();
@@ -291,6 +295,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     endLongitude = startLongitude;
                     mMap.clear();
                     updateDistanceUI();
+                    TextView textView = (TextView) findViewById(R.id.distanceLeft);
+                    textView.setText("Ended Calculating Distance");
+
                 }
             }
         });
@@ -320,6 +327,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         String stringDistance = String.format("%.3f", newDistance);
         TextView textView = (TextView) findViewById(R.id.distanceLeft);
         textView.setText("Distance in Miles: " + stringDistance);
+
+        SharedPreferences sharedPrefs = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        String radiusSP = sharedPrefs.getString(RADIUS_SETTINGS, null);
+        Log.d(TAG, "radiusSP = "+ radiusSP);
+        if(radiusSP == null || radiusSP == ""){
+            radiusD = .25;
+        }
+        else{
+            radiusS = radiusSP;
+            radiusD = Double.parseDouble(radiusS);
+
+        }
+
+        Log.d(TAG, "radiusMapAct = " + radiusD);
+
+        if(newDistance <= radiusD){
+            //Alarm set off
+
+            textView.setText("Within radius. Alarm going off!");
+        }
     }
 
     public double CalculationByDistance(double startLat, double startLong, double endLat, double endLong) {
