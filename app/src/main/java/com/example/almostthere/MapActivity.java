@@ -110,6 +110,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static final String RADIUS_SETTINGS = "RADIUS_SETTINGS";
     public static final String APP_PREFS = "APPLICATION_PREFERENCES";
 
+    //public Boolean moveCameraWithYou = false;
+
 
     MarkerOptions options = null;
 
@@ -177,11 +179,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             getLocationPermission();
         }
 
+        TextView textView = (TextView) findViewById(R.id.distanceLeft);
+        radiusD = getRadiusD();
+        textView.setText("No pin set yet.\n" + "Radius is set at: " + radiusD + " miles");
+
     }
 
     private void init() {
         Log.d(TAG, "init: initializing");
-
 
 
         mGps.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +195,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 setMoveToCurrentLocation = true;
                 Log.d(TAG, "onClick: clicked gps icon");
                 getDeviceLocation(setCamera = true);
+
             }
         });
 
@@ -268,7 +274,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     mMap.clear();
                     updateDistanceUI();
                     TextView textView = (TextView) findViewById(R.id.distanceLeft);
-                    textView.setText("Ended Calculating Distance");
+                    textView.setText("Ended Calculating Distance.\nRadius is set at: " + radiusD + " miles");
 
                 }
             }
@@ -298,8 +304,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         newDistance = CalculationByDistance(startLatitude, startLongitude, endLatitude, endLongitude);
         String stringDistance = String.format("%.3f", newDistance);
         TextView textView = (TextView) findViewById(R.id.distanceLeft);
-        textView.setText("Distance in Miles: " + stringDistance);
+        textView.setText("Distance left to go: " + stringDistance + " miles\nRadius is set at: " + radiusD + " miles");
 
+        radiusD = getRadiusD();
+
+        Log.d(TAG, "radiusMapAct = " + radiusD);
+
+        if(newDistance <= radiusD){
+            //Alarm set off
+
+            textView.setText("Within radius. Alarm going off!");
+        }
+    }
+
+    public Double getRadiusD(){
         SharedPreferences sharedPrefs = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         String radiusSP = sharedPrefs.getString(RADIUS_SETTINGS, null);
         Log.d(TAG, "radiusSP = "+ radiusSP);
@@ -309,16 +327,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         else{
             radiusS = radiusSP;
             radiusD = Double.parseDouble(radiusS);
-
         }
-
         Log.d(TAG, "radiusMapAct = " + radiusD);
+        return radiusD;
 
-        if(newDistance <= radiusD){
-            //Alarm set off
-
-            textView.setText("Within radius. Alarm going off!");
-        }
     }
 
     public double CalculationByDistance(double startLat, double startLong, double endLat, double endLong) {

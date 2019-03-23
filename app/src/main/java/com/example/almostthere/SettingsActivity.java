@@ -38,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked settings icon");
 
-                String result = "bye";
+                String result = radiusSet;
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("result",result);
                 setResult(RESULT_OK,returnIntent);
