@@ -57,14 +57,11 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked changed radius");
-                //radiusS = getIntent().getStringExtra(MapActivity.RADIUS_SETTINGS);
                 radiusSet = setRadius.getText().toString();
                 if(radiusSet == null){
                     radiusSet = "0.25";
                 }
-                //radius = Double.parseDouble(radiusS);
                 Log.d(TAG, "radius = " + radiusSet);
-
 
                 SharedPreferences prefs = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
@@ -77,19 +74,5 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    public void refreshActivity() {
-        Intent i = new Intent(this, MapActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        finish();
-
-    }
-
-    @Override
-    public void onResume()
-    {  // After a pause OR at startup
-        super.onResume();
-        //Refresh your stuff here
-    }
 
 }

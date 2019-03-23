@@ -177,34 +177,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             getLocationPermission();
         }
 
-/*
-        Log.i(TAG, "Repeating updating the distance for new distance: " + newDistance);
-        if(newDistance > 0.001){
-            Thread t = new Thread(){
-                //@Override
-                public void run() {
-                    while (!isInterrupted()) {
-                        try {
-                            Thread.sleep(2000);
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.i(TAG, "Repeating updating the distance");
-                                    updateDistanceUI();
-                                }
-                            });
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            };
-            t.start();
-        }
-
-        */
-
     }
 
     private void init() {
