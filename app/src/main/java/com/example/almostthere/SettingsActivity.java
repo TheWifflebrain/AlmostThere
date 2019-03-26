@@ -14,17 +14,21 @@ import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    //var for logs
+    /** var for logs */
     private static final String TAG = "SettingsActivity";
 
-    //vars for UI
+    /** vars for UI */
     private ImageView buttonBack;
     private EditText setRadius;
     private Button buttonSetRadius;
 
-    //var to set radius
+    /** var to set radius */
     public String radiusSet = "";
 
+    /**
+     * Creates the settings intent
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +37,14 @@ public class SettingsActivity extends AppCompatActivity {
         buttonSetRadius = (Button) findViewById(R.id.radius_button);
         setRadius = (EditText) findViewById(R.id.txtRadius);
 
-
+        /**
+         * The workings behind the back arrow button
+         */
         buttonBack.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Loads the previous intent without the previous intent losing data
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked settings icon");
@@ -43,12 +53,16 @@ public class SettingsActivity extends AppCompatActivity {
                 setResult(RESULT_CANCELED, returnIntent);
                 finish();
             }
-
-
-
         });
 
+        /**
+         * Workings behind the set radius button
+         */
         buttonSetRadius.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Changes the radius when the user updates it
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked changed radius");
@@ -56,18 +70,15 @@ public class SettingsActivity extends AppCompatActivity {
                 if(radiusSet == null){
                     radiusSet = "0.25";
                 }
-                Log.d(TAG, "radius = " + radiusSet);
+                Log.i(TAG, "radius = " + radiusSet);
 
+                /** saving the radius to shared preferences */
                 SharedPreferences prefs = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString(MapActivity.RADIUS_SETTINGS, radiusSet);
                 editor.apply();
                 Toast.makeText(SettingsActivity.this, "Set Radius to: " + radiusSet + " miles.", Toast.LENGTH_LONG).show();
             }
-
         });
-
     }
-
-
 }
