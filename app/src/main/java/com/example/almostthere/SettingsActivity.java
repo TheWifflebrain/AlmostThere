@@ -12,17 +12,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.Set;
-
 public class SettingsActivity extends AppCompatActivity {
+
+    //var for logs
+    private static final String TAG = "SettingsActivity";
+
+    //vars for UI
     private ImageView buttonBack;
     private EditText setRadius;
-    private static final String TAG = "SettingsActivity";
     private Button buttonSetRadius;
-    public Double radius = 0.25;
-    public String radiusSet = "";
-    public static final String MY_RADIUS = "RADIUS";
 
+    //var to set radius
+    public String radiusSet = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +39,9 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked settings icon");
 
-                String result = radiusSet;
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("result",result);
-                setResult(RESULT_OK,returnIntent);
+                setResult(RESULT_CANCELED, returnIntent);
                 finish();
-
-                //Intent returnIntent = new Intent();
-                //setResult(RESULT_CANCELED, returnIntent);
-                //finish();
             }
 
 
@@ -67,7 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString(MapActivity.RADIUS_SETTINGS, radiusSet);
                 editor.apply();
-                Toast.makeText(SettingsActivity.this, "Set Radius to: " + radiusSet, Toast.LENGTH_LONG).show();
+                Toast.makeText(SettingsActivity.this, "Set Radius to: " + radiusSet + " miles.", Toast.LENGTH_LONG).show();
             }
 
         });
