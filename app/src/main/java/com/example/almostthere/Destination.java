@@ -1,30 +1,30 @@
 package com.example.almostthere;
 
 public class Destination {
-    private Location endPoint;
-    private float radius;
+    private LocationAT endPoint;
+    private double endRadius;
     private String destAddress;
 
-    public Destination(Location endPoint, float radius) {
+    public Destination(LocationAT endPoint, double radius) {
         this.endPoint = endPoint;
-        this.radius = radius;
+        this.endRadius = radius;
     }
 
-    public Location getEndPoint() {
+    public Destination() { }
+
+    public LocationAT getEndPoint() {
         return endPoint;
     }
 
-    public void setEndPoint(Location endPoint) {
+    public void setEndPoint(LocationAT endPoint) {
         this.endPoint = endPoint;
     }
 
-    public float getRadius() {
-        return radius;
+    public double getRadius() {
+        return endRadius;
     }
 
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
+    public void setRadius(double radius) { this.endRadius = radius; }
 
     public String getAddress() {
         return destAddress;

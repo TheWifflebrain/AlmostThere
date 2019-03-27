@@ -60,14 +60,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ImageView breakPin;
     private ImageView buttonSettings;
     private ImageView setPin;
+    private TextView textView;
 
     /** locations vars */
-    private double startLongitude;
-    private double startLatitude;
-    private double endLongitude;
-    private double endLatitude;
     double newDistance = 0.0;
     MarkerOptions options = null;
+    LocationAT endLocation = new LocationAT();
+    LocationAT startLocation = new LocationAT();
+    Destination endDestination = new Destination();
+    LocationATController distanceLocationATController = new LocationATController();
+    public Boolean alarmGoingOff = false;
 
     /** radius vars */
     public String radiusS = "0.25";
@@ -92,19 +94,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        startPinGps = (ImageView) findViewById(R.id.ic_gsp);
-        buttonSettings = (ImageView) findViewById(R.id.settingsIV);
-        setPin = (ImageView) findViewById(R.id.ic_set);
-        breakPin = (ImageView) findViewById(R.id.ic_break);
-        endPinGps = (ImageView) findViewById(R.id.ic_locateFinalDestination);
+        startPinGps = findViewById(R.id.ic_gsp);
+        buttonSettings = findViewById(R.id.settingsIV);
+        setPin = findViewById(R.id.ic_set);
+        breakPin = findViewById(R.id.ic_break);
+        endPinGps = findViewById(R.id.ic_locateFinalDestination);
+
 
         if (isServicesOK()) {
             getLocationPermission();
         }
 
-        TextView textView = (TextView) findViewById(R.id.distanceLeft);
-        radiusD = getRadiusD();
-        textView.setText("No pin set yet.\n" + "Radius is set at: " + radiusD + " miles");
+        TextView textView = findViewById(R.id.distanceLeft);
+        getRadiusD();
+        textView.setText("No pin set yet.\n" + "Radius is set at: " + endDestination.getRadius() + " miles");
     }
 
     /**
@@ -144,8 +147,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked endPinGps icon");
                 setMoveToCurrentLocation = false;
-                if(endLongitude != 0.000000) {
-                    moveCamera(new LatLng(endLatitude, endLongitude),
+                if(endDestination.getEndPoint().getLongitude() != 0.000000) {
+                    moveCamera(new LatLng(endDestination.getEndPoint().getLatitude(), endDestination.getEndPoint().getLongitude()),
                             DEFAULT_ZOOM, "Destination Location");
                 }
             }
@@ -192,10 +195,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             .position(view);
                     mMap.addMarker(options);
                 }
-                endLatitude = view.latitude;
-                endLongitude = view.longitude;
+                endLocation.setLatitude(view.latitude);
+                endLocation.setLongitude(view.longitude);
+                endDestination.setEndPoint(endLocation);
 
-                Log.i(TAG, "endLat" + endLatitude + "    endLong:" + endLongitude);
+                Log.i(TAG, "endLat" + endDestination.getEndPoint().getLatitude() + "    endLong:" + endDestination.getEndPoint().getLongitude());
             }
         });
 
@@ -213,7 +217,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Log.d(TAG, "onClick: clicked double check mark icon");
                 if(options != null) {
                     updateDistanceUI();
-                    if (newDistance > 0.001 && newDistance > radiusD) {
+                    if (newDistance > 0.001 && newDistance > endDestination.getRadius()) {
                         handler.postDelayed(runnable, 3000);
                     }
                     else{
@@ -237,12 +241,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if(options != null) {
                     newDistance = 0.0;
                     options = null;
-                    endLatitude = startLatitude;
-                    endLongitude = startLongitude;
+                    endDestination.getEndPoint().setLatitude(startLocation.getLatitude());
+                    endDestination.getEndPoint().setLongitude(startLocation.getLongitude());
                     mMap.clear();
                     updateDistanceUI();
-                    TextView textView = (TextView) findViewById(R.id.distanceLeft);
-                    textView.setText("Ended Calculating Distance.\nRadius is set at: " + radiusD + " miles");
+                    TextView textView = findViewById(R.id.distanceLeft);
+                    textView.setText("Ended Calculating Distance.\nRadius is set at: " + endDestination.getRadius() + " miles");
                 }
             }
         });
@@ -271,7 +275,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 updateDistanceUI();
 
                 /** repeating updates if the distance between pins is greater than the radius */
-                if(newDistance > radiusD) {
+                if(newDistance > endDestination.getRadius()) {
                     Log.d(TAG, "repeating updating the distance in runnable");
                     handler.postDelayed(this, 3000);
                 }
@@ -288,27 +292,63 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Checks to see if the alarm is suppose to go off
      */
     public void updateDistanceUI(){
-        newDistance = CalculationByDistance(startLatitude, startLongitude, endLatitude, endLongitude);
+        newDistance =  updateDistance();
         String stringDistance = String.format("%.3f", newDistance);
-        TextView textView = (TextView) findViewById(R.id.distanceLeft);
-        textView.setText("Distance left to go: " + stringDistance + " miles\nRadius is set at: " + radiusD + " miles");
+        textView = findViewById(R.id.distanceLeft);
+        textView.setText("Distance left to go: " + stringDistance + " miles\nRadius is set at: " + endDestination.getRadius() + " miles");
 
-        radiusD = getRadiusD();
+        Log.i(TAG, "radiusMapAct = " + endDestination.getRadius());
 
-        Log.i(TAG, "radiusMapAct = " + radiusD);
+        updateAlarmUI(alarmGoingOff);
+    }
 
-        if(newDistance <= radiusD){
-            /** Alarm set off */
+    /**
+     * Updates the distance left from the new starting to ending location
+     * @return distance left from starting to ending location
+     */
+    public Double updateDistance(){
+        newDistance = distanceLocationATController.calculationByDistance(startLocation.getLatitude(), startLocation.getLongitude(), endDestination.getEndPoint().getLatitude(), endDestination.getEndPoint().getLongitude());
+        getRadiusD();
+        Log.i(TAG, "radiusMapAct = " + endDestination.getRadius());
 
+
+        return newDistance;
+    }
+
+    /**
+     * Updates the textbox when alarm is going off to display that instead of distance info
+     * @param alarm is the alarm going off?
+     */
+    public void updateAlarmUI(Boolean alarm){
+        alarmGoingOff = alarm;
+        alarmGoingOff = checkAlarm();
+        if(alarmGoingOff == true){
             textView.setText("Within radius. Alarm going off!");
         }
+        else{
+
+        }
+    }
+
+    /**
+     * Checks to see if the alarm is suppose to go off
+     */
+    public Boolean checkAlarm(){
+        alarmGoingOff = distanceLocationATController.withinRadius(newDistance, endDestination.getRadius());
+        if(alarmGoingOff == true){
+
+        }
+        else{
+
+        }
+        return alarmGoingOff;
     }
 
     /**
      * Gets the radius from the settings page and converts it from a string to a double.
      * @return the radius in the type of double
      */
-    public Double getRadiusD(){
+    public void getRadiusD(){
         /** Getting the radius from the settings page */
         SharedPreferences sharedPrefs = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         String radiusSP = sharedPrefs.getString(RADIUS_SETTINGS, null);
@@ -322,31 +362,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             radiusS = radiusSP;
             radiusD = Double.parseDouble(radiusS);
         }
-        Log.i(TAG, "radiusMapAct = " + radiusD);
 
-        return radiusD;
-    }
-
-    /**
-     * Calculating the distance between two pins
-     * @param startLat latitude for the starting location
-     * @param startLong longitude for the starting location
-     * @param endLat latitude for the ending location
-     * @param endLong longitude for the ending location
-     * @return distance from each pin in miles
-     */
-    public double CalculationByDistance(double startLat, double startLong, double endLat, double endLong) {
-        int Radius=6371; /** radius of earth in Km */
-        double dLat = Math.toRadians(endLat-startLat);
-        double dLon = Math.toRadians(endLong-startLong);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(endLat)) *
-                        Math.sin(dLon/2) * Math.sin(dLon/2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        double distMiles = (Radius*c)/1.609; /** dividing by 1.609 to go from km to miles */
-        Log.i("Radius Value",+ distMiles + "  in miles.");
-
-        return distMiles;
+        endDestination.setRadius(radiusD);
+        Log.i(TAG, "radiusMapAct = " + endDestination.getRadius());
     }
 
     /**
@@ -374,10 +392,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
-                            currentLocation.setLongitude(currentLocation.getLongitude());
-                            currentLocation.setLatitude(currentLocation.getLatitude());
-                            startLatitude = currentLocation.getLatitude();
-                            startLongitude = currentLocation.getLongitude();
+
+                            startLocation.setLongitude(currentLocation.getLongitude());
+                            startLocation.setLatitude(currentLocation.getLatitude());
+
                             if(setCamera == true) {
                                 moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                         DEFAULT_ZOOM,
