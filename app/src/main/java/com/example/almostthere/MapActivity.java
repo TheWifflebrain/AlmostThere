@@ -82,6 +82,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static final String RADIUS_SETTINGS = "RADIUS_SETTINGS";
     public static final String APP_PREFS = "APPLICATION_PREFERENCES";
 
+    /** vars for timer */
+    TimerATController timerAT = new TimerATController();
+    String timeItTook = "";
+
 
     /**
      * This function creates all the items that are displayed on the screen
@@ -99,7 +103,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setPin = findViewById(R.id.ic_set);
         breakPin = findViewById(R.id.ic_break);
         endPinGps = findViewById(R.id.ic_locateFinalDestination);
-
 
         if (isServicesOK()) {
             getLocationPermission();
@@ -217,6 +220,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Log.d(TAG, "onClick: clicked double check mark icon");
                 if(options != null) {
                     updateDistanceUI();
+
+                    timerAT.timer.start();
                     if (newDistance > 0.001 && newDistance > endDestination.getRadius()) {
                         handler.postDelayed(runnable, 3000);
                     }
@@ -239,6 +244,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked minus in circle icon");
                 if(options != null) {
+                    timerAT.timer.cancel();
                     newDistance = 0.0;
                     options = null;
                     endDestination.getEndPoint().setLatitude(startLocation.getLatitude());
@@ -321,9 +327,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     public void updateAlarmUI(Boolean alarm){
         alarmGoingOff = alarm;
+
         alarmGoingOff = checkAlarm();
         if(alarmGoingOff == true){
-            textView.setText("Within radius. Alarm going off!");
+            timeItTook = timerAT.timeItTookLength;
+            textView.setText("Within radius. Alarm going off!\nIt took " + timeItTook);
+            timerAT.timer.cancel();
         }
         else{
 
