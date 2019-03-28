@@ -21,9 +21,15 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageView buttonBack;
     private EditText setRadius;
     private Button buttonSetRadius;
+    private Button buttonSetMessage;
+    private EditText setMessage;
+    private Button buttonSetContact;
+    private EditText setContact;
 
     /** var to set radius */
     public String radiusSet = "";
+    public String messageSet = "";
+    public String contactSet = "";
 
     /**
      * Creates the settings intent
@@ -33,9 +39,13 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings2);
-        buttonBack = (ImageView) findViewById(R.id.backToMain);
-        buttonSetRadius = (Button) findViewById(R.id.radius_button);
-        setRadius = (EditText) findViewById(R.id.txtRadius);
+        buttonBack = findViewById(R.id.backToMain);
+        buttonSetRadius = findViewById(R.id.radius_button);
+        setRadius = findViewById(R.id.txtRadius);
+        setMessage = findViewById(R.id.messageSMS);
+        buttonSetMessage = findViewById(R.id.textSMSConfirm);
+        buttonSetContact = findViewById(R.id.buttonSetContact);
+        setContact = findViewById(R.id.numberSMS);
 
         /**
          * The workings behind the back arrow button
@@ -77,7 +87,49 @@ public class SettingsActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString(MapActivity.RADIUS_SETTINGS, radiusSet);
                 editor.apply();
-                Toast.makeText(SettingsActivity.this, "Set Radius to: " + radiusSet + " miles.", Toast.LENGTH_LONG).show();
+                Toast.makeText(SettingsActivity.this, "Set Radius to: " + radiusSet + " miles.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /**
+         * Workings behind the set message button
+         */
+        buttonSetMessage.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Changes the radius when the user updates it
+             * @param view
+             */
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked set message button");
+                if(messageSet == null || messageSet == ""){
+                    messageSet = "";
+                }
+                else{
+                    messageSet = setMessage.getText().toString();
+                    Toast.makeText(SettingsActivity.this, "Your message has been set!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        /**
+         * Workings behind the set contact button
+         */
+        buttonSetContact.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Changes the radius when the user updates it
+             * @param view
+             */
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked set contact button");
+                if(contactSet == null || contactSet == " "){
+                    contactSet = "";
+                }
+                else{
+                    messageSet = setMessage.getText().toString();
+                    Toast.makeText(SettingsActivity.this, "Your contact has been set!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -43,7 +43,7 @@
         android:layout_width="157dp"
         android:layout_height="59dp"
         android:layout_marginTop="105dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="9dp"
         android:hint="424-242-4242"
         android:inputType="phone"
@@ -53,21 +53,23 @@
         app:layout_constraintBottom_toTopOf="@+id/messageSMS"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/txtContact"
-        app:layout_constraintTop_toBottomOf="@+id/txtChooseAlarm" />
+        app:layout_constraintTop_toBottomOf="@+id/txtChooseAlarm"
+        app:layout_constraintVertical_bias="0.626" />
 
     <EditText
         android:id="@+id/messageSMS"
         android:layout_width="351dp"
-        android:layout_height="133dp"
+        android:layout_height="86dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="72dp"
         android:hint="I will be there soon!"
         android:inputType="text"
         android:textAlignment="viewStart"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -114,11 +116,11 @@
 
     <TextView
         android:id="@+id/txtContact"
-        android:layout_width="178dp"
+        android:layout_width="119dp"
         android:layout_height="35dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="122dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="83dp"
         android:layout_marginBottom="16dp"
         android:ems="10"
         android:inputType="textPersonName"
@@ -129,9 +131,9 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/messageSMS"
         app:layout_constraintEnd_toStartOf="@+id/numberSMS"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtChooseAlarm"
+        app:layout_constraintVertical_bias="0.554"
         tools:ignore="TextViewEdits"
         tools:text="Contact" />
 
@@ -158,6 +160,22 @@
         app:layout_constraintTop_toBottomOf="@+id/txtRadius" />
 
     <Button
+        android:id="@+id/buttonSetContact"
+        android:layout_width="125dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="44dp"
+        android:text="Set Contact"
+        app:layout_constraintBottom_toTopOf="@+id/messageSMS"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.962"
+        app:layout_constraintStart_toEndOf="@+id/messageSMS"
+        app:layout_constraintTop_toBottomOf="@+id/numberSMS"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <Button
         android:id="@+id/textSMSConfirm"
         android:layout_width="125dp"
         android:layout_height="48dp"
@@ -168,8 +186,10 @@
         android:text="Set Message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/messageSMS" />
+        app:layout_constraintTop_toBottomOf="@+id/messageSMS"
+        app:layout_constraintVertical_bias="0.583" />
 
 
 </android.support.constraint.ConstraintLayout>
