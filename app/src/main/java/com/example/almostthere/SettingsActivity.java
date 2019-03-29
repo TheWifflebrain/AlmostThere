@@ -42,8 +42,8 @@ public class SettingsActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.backToMain);
         buttonSetRadius = findViewById(R.id.radius_button);
         setRadius = findViewById(R.id.txtRadius);
-        setMessage = findViewById(R.id.messageSMS);
         buttonSetMessage = findViewById(R.id.textSMSConfirm);
+        setMessage = findViewById(R.id.messageSMS);
         buttonSetContact = findViewById(R.id.buttonSetContact);
         setContact = findViewById(R.id.numberSMS);
 
@@ -102,12 +102,17 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked set message button");
-                if(messageSet == null || messageSet == ""){
+                if(messageSet == null || messageSet == " "){
                     messageSet = "";
                 }
                 else{
                     messageSet = setMessage.getText().toString();
+                    SharedPreferences prefs1 = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs1.edit();
+                    editor.putString(MapActivity.MESSAGE_SETTINGS, messageSet);
+                    editor.apply();
                     Toast.makeText(SettingsActivity.this, "Your message has been set!", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "Message: " + messageSet);
                 }
             }
         });
@@ -127,10 +132,22 @@ public class SettingsActivity extends AppCompatActivity {
                     contactSet = "";
                 }
                 else{
-                    messageSet = setMessage.getText().toString();
+                    contactSet = setContact.getText().toString();
+                    SharedPreferences prefs2 = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs2.edit();
+                    editor.putString(MapActivity.CONTACT_SETTINGS, contactSet);
+                    editor.apply();
                     Toast.makeText(SettingsActivity.this, "Your contact has been set!", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "Contact: " + contactSet);
                 }
             }
         });
+    }
+
+    public String getContact(){
+        return contactSet;
+    }
+    public String getMessage(){
+        return messageSet;
     }
 }

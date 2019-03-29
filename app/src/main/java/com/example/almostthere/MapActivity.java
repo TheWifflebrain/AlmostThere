@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -48,6 +49,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Boolean mLocationPermissionsGranted = false;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private static final int ERROR_DIALOG_REQUEST = 9001;
+    final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
     /** camera vars */
     private static final float DEFAULT_ZOOM = 15f;
@@ -70,6 +72,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Destination endDestination = new Destination();
     LocationATController distanceLocationATController = new LocationATController();
     public Boolean alarmGoingOff = false;
+    public String pNumber = "";
+    public String SMSmessage = "";
+    public Boolean canSendSMS = false;
 
     /** radius vars */
     public String radiusS = "0.25";
@@ -81,6 +86,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     /** shared prefs vars */
     public static final String RADIUS_SETTINGS = "RADIUS_SETTINGS";
     public static final String APP_PREFS = "APPLICATION_PREFERENCES";
+    public static final String MESSAGE_SETTINGS = "MESSAGE_SETTINGS";
+    public static final String CONTACT_SETTINGS = "CONTACT_SETTINGS";
 
     /** vars for timer */
     TimerATController timerAT = new TimerATController();
@@ -106,11 +113,41 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         if (isServicesOK()) {
             getLocationPermission();
+            getSendSMSPermission();
         }
 
         TextView textView = findViewById(R.id.distanceLeft);
         getRadiusD();
         textView.setText("No pin set yet.\n" + "Radius is set at: " + endDestination.getRadius() + " miles");
+    }
+
+    public void sendMessage(){
+        SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
+        SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        SMSmessage = sharedPrefs1.getString(MESSAGE_SETTINGS, null);
+
+        Log.i(TAG, "Message: " + SMSmessage);
+        Log.i(TAG, "Number: " + pNumber);
+
+        if(pNumber == null || pNumber.length() == 0 || SMSmessage == null ||
+                SMSmessage.length() == 0 || canSendSMS == false){
+            return;
+        }
+
+        if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(pNumber, null, SMSmessage, null, null);
+            Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(this, "Message Failed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean checkPermissionSMS(String permission){
+        int check = ContextCompat.checkSelfPermission(this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
     }
 
     /**
@@ -333,6 +370,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             timeItTook = timerAT.timeItTookLength;
             textView.setText("Within radius. Alarm going off!\nIt took " + timeItTook);
             timerAT.timer.cancel();
+            sendMessage();
         }
         else{
 
@@ -497,6 +535,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+
+    private void getSendSMSPermission(){
+        Log.d(TAG, "getSendSMSPermission: getting sms permissions");
+        String[] permissions = {Manifest.permission.SEND_SMS};
+        if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
+            canSendSMS = true;
+        }
+        else{
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    SEND_SMS_PERMISSION_REQUEST_CODE);
+        }
     }
 
     /**
