@@ -93,7 +93,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     TimerATController timerAT = new TimerATController();
     String timeItTook = "";
 
-
     /**
      * This function creates all the items that are displayed on the screen
      * such as the buttons, textViews, and displays your current location if
@@ -115,7 +114,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             getLocationPermission();
             getSendSMSPermission();
         }
-
+        SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        sharedPrefs2.edit().remove(CONTACT_SETTINGS).commit();
+        sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
         TextView textView = findViewById(R.id.distanceLeft);
         getRadiusD();
         textView.setText("No pin set yet.\n" + "Radius is set at: " + endDestination.getRadius() + " miles");
@@ -123,9 +125,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void sendMessage(){
         SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-        pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
         SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         SMSmessage = sharedPrefs1.getString(MESSAGE_SETTINGS, null);
+        pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
 
         Log.i(TAG, "Message: " + SMSmessage);
         Log.i(TAG, "Number: " + pNumber);
