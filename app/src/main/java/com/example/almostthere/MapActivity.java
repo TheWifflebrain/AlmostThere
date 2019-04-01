@@ -262,7 +262,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     timerAT.timer.start();
                     if (newDistance > 0.001 && newDistance > endDestination.getRadius()) {
-                        handler.postDelayed(runnable, 3000);
+                        handler.postDelayed(runnable, 500);
                     }
                     else{
                         Log.d(TAG, "Stopped repeating updating distance in setPin");
@@ -322,7 +322,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 /** repeating updates if the distance between pins is greater than the radius */
                 if(newDistance > endDestination.getRadius()) {
                     Log.d(TAG, "repeating updating the distance in runnable");
-                    handler.postDelayed(this, 3000);
+                    handler.postDelayed(this, 500);
                 }
                 else{
                     Log.d(TAG, "stopped updating the distance in runnable");
