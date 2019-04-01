@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Almost There</string>
+    <string name="choose_alarm">Choose Alarm</string>
+    <string name="choose_radius">Choose Radius</string>
 </resources>
