@@ -86,13 +86,13 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/messageSMS2"
+        android:id="@+id/messageSMS1"
         android:layout_width="351dp"
         android:layout_height="49dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="124dp"
-        android:hint="1. I will be there in 50 miles!"
+        android:hint="1. I will be there in 15 miles!"
         android:inputType="textCapSentences|textMultiLine"
         android:maxLength="2000"
         android:maxLines="5"
@@ -207,7 +207,7 @@
         android:layout_marginStart="266dp"
         android:layout_marginEnd="20dp"
         android:text="Set Contact"
-        app:layout_constraintBottom_toTopOf="@+id/messageSMS2"
+        app:layout_constraintBottom_toTopOf="@+id/messageSMS1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -218,7 +218,7 @@
         android:layout_marginStart="41dp"
         android:layout_marginEnd="93dp"
         android:text="Set Send When"
-        app:layout_constraintBottom_toTopOf="@+id/messageSMS2"
+        app:layout_constraintBottom_toTopOf="@+id/messageSMS1"
         app:layout_constraintEnd_toStartOf="@+id/buttonSetContact"
         app:layout_constraintHorizontal_bias="0.833"
         app:layout_constraintStart_toStartOf="parent" />

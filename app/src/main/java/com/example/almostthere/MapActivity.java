@@ -74,7 +74,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public Boolean alarmGoingOff = false;
     public String pNumber = "";
     public String SMSmessage = "";
+    public String SMSmessageDist = "";
+    public String sendWhenDist = "";
     public Boolean canSendSMS = false;
+    public Boolean sendDistMessageOnce = false;
+    public double sendWhenDistD;
 
     /** radius vars */
     public String radiusS = "0.25";
@@ -88,6 +92,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static final String APP_PREFS = "APPLICATION_PREFERENCES";
     public static final String MESSAGE_SETTINGS = "MESSAGE_SETTINGS";
     public static final String CONTACT_SETTINGS = "CONTACT_SETTINGS";
+    public static final String SEND_WHEN_SETTINGS = "SEND_WHEN_SETTINGS";
+    public static final String SEND_WHEN_MESSAGE_SETTINGS = "SEND_WHEN_MESSAGE_SETTINGS";
 
     /** vars for timer */
     TimerATController timerAT = new TimerATController();
@@ -265,6 +271,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
                     sharedPrefs2.edit().remove(CONTACT_SETTINGS).commit();
                     sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
+                    sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
+                    sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
                 }
             }
         });
@@ -312,6 +320,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void updateDistanceUI(){
         newDistance =  updateDistance();
         String stringDistance = String.format("%.3f", newDistance);
+        sendMessage();
         textView = findViewById(R.id.distanceLeft);
         textView.setText("Distance left to go: " + stringDistance + " miles\nRadius is set at: " + endDestination.getRadius() + " miles");
 
@@ -344,12 +353,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             timeItTook = timerAT.timeItTookLength;
             textView.setText("Within radius. Alarm going off!\nIt took " + timeItTook);
             timerAT.timer.cancel();
-            sendMessage();
+            sendMessageAlarm();
 
             SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
             SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
             sharedPrefs2.edit().remove(CONTACT_SETTINGS).commit();
             sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
+            sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
+            sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
         }
         else{
 
@@ -397,6 +408,39 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Sends a SMS and checks to see if the message and number are valid
      */
     public void sendMessage(){
+        SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
+        sendWhenDist = sharedPrefs1.getString(SEND_WHEN_SETTINGS, null);
+        SMSmessageDist = sharedPrefs1.getString(SEND_WHEN_MESSAGE_SETTINGS, null);
+        sendWhenDistD = Double.parseDouble(sendWhenDist);
+
+
+        Log.i(TAG, "MessageDist: " + SMSmessageDist);
+        Log.i(TAG, "NumberDist: " + pNumber);
+
+        if(pNumber == null || pNumber.length() == 0 || SMSmessageDist == null ||
+                SMSmessageDist.length() == 0){
+            return;
+        }
+
+
+        if(sendDistMessageOnce == false){
+            if(newDistance <= sendWhenDistD){
+                if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(pNumber, null, SMSmessageDist, null, null);
+                    Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
+                    sendDistMessageOnce = true;
+                }
+                else{
+                    Toast.makeText(this, "Message Failed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    public void sendMessageAlarm(){
         SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         SMSmessage = sharedPrefs1.getString(MESSAGE_SETTINGS, null);
