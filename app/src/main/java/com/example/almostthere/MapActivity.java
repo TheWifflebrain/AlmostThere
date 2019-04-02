@@ -114,42 +114,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             getLocationPermission();
             getSendSMSPermission();
         }
-        SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-        SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-        sharedPrefs2.edit().remove(CONTACT_SETTINGS).commit();
-        sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
+
         TextView textView = findViewById(R.id.distanceLeft);
         getRadiusD();
         textView.setText("No pin set yet.\n" + "Radius is set at: " + endDestination.getRadius() + " miles");
-    }
-
-    public void sendMessage(){
-        SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-        SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-        SMSmessage = sharedPrefs1.getString(MESSAGE_SETTINGS, null);
-        pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
-
-        Log.i(TAG, "Message: " + SMSmessage);
-        Log.i(TAG, "Number: " + pNumber);
-
-        if(pNumber == null || pNumber.length() == 0 || SMSmessage == null ||
-                SMSmessage.length() == 0 || canSendSMS == false){
-            return;
-        }
-
-        if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(pNumber, null, SMSmessage, null, null);
-            Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(this, "Message Failed!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public boolean checkPermissionSMS(String permission){
-        int check = ContextCompat.checkSelfPermission(this, permission);
-        return (check == PackageManager.PERMISSION_GRANTED);
     }
 
     /**
@@ -292,6 +260,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     updateDistanceUI();
                     TextView textView = findViewById(R.id.distanceLeft);
                     textView.setText("Ended Calculating Distance.\nRadius is set at: " + endDestination.getRadius() + " miles");
+
+                    SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+                    SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+                    sharedPrefs2.edit().remove(CONTACT_SETTINGS).commit();
+                    sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
                 }
             }
         });
@@ -356,7 +329,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         getRadiusD();
         Log.i(TAG, "radiusMapAct = " + endDestination.getRadius());
 
-
         return newDistance;
     }
 
@@ -373,6 +345,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             textView.setText("Within radius. Alarm going off!\nIt took " + timeItTook);
             timerAT.timer.cancel();
             sendMessage();
+
+            SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+            sharedPrefs2.edit().remove(CONTACT_SETTINGS).commit();
+            sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
         }
         else{
 
@@ -414,6 +391,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         endDestination.setRadius(radiusD);
         Log.i(TAG, "radiusMapAct = " + endDestination.getRadius());
+    }
+
+    /**
+     * Sends a SMS and checks to see if the message and number are valid
+     */
+    public void sendMessage(){
+        SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        SMSmessage = sharedPrefs1.getString(MESSAGE_SETTINGS, null);
+        pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
+
+        Log.i(TAG, "Message: " + SMSmessage);
+        Log.i(TAG, "Number: " + pNumber);
+
+        if(pNumber == null || pNumber.length() == 0 || SMSmessage == null ||
+                SMSmessage.length() == 0 || canSendSMS == false){
+            return;
+        }
+
+        if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(pNumber, null, SMSmessage, null, null);
+            Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(this, "Message Failed!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -539,6 +543,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return false;
     }
 
+    /**
+     * Checking if you can send a SMS
+     */
     private void getSendSMSPermission(){
         Log.d(TAG, "getSendSMSPermission: getting sms permissions");
         String[] permissions = {Manifest.permission.SEND_SMS};
@@ -550,6 +557,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     permissions,
                     SEND_SMS_PERMISSION_REQUEST_CODE);
         }
+    }
+
+    /**
+     * Checks if permissions for SMS is good
+     * @param permission the permissions string
+     * @return if permissions is either granted or not
+     */
+    public boolean checkPermissionSMS(String permission){
+        int check = ContextCompat.checkSelfPermission(this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
     }
 
     /**

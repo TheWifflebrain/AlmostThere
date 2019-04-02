@@ -143,11 +143,4 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
-
-    public String getContact(){
-        return contactSet;
-    }
-    public String getMessage(){
-        return messageSet;
-    }
 }
