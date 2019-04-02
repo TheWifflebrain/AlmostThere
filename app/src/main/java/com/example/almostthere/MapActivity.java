@@ -355,9 +355,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             timerAT.timer.cancel();
             sendMessageAlarm();
 
-            SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
             SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-            sharedPrefs2.edit().remove(CONTACT_SETTINGS).commit();
+            sharedPrefs1.edit().remove(CONTACT_SETTINGS).commit();
             sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
             sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
             sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
@@ -405,16 +404,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     /**
-     * Sends a SMS and checks to see if the message and number are valid
+     * Sends a SMS and checks to see if the message and number are valid by distance
      */
     public void sendMessage(){
         SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-        SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
-        sendWhenDist = sharedPrefs1.getString(SEND_WHEN_SETTINGS, null);
-        SMSmessageDist = sharedPrefs1.getString(SEND_WHEN_MESSAGE_SETTINGS, null);
-        sendWhenDistD = Double.parseDouble(sendWhenDist);
-
+        sendWhenDist = sharedPrefs2.getString(SEND_WHEN_SETTINGS, null);
+        SMSmessageDist = sharedPrefs2.getString(SEND_WHEN_MESSAGE_SETTINGS, null);
+        if(sendWhenDist != null){
+            sendWhenDistD = Double.parseDouble(sendWhenDist);
+        }
 
         Log.i(TAG, "MessageDist: " + SMSmessageDist);
         Log.i(TAG, "NumberDist: " + pNumber);
@@ -440,11 +439,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Sends a SMS and checks to see if the message and number are valid by radius
+     */
     public void sendMessageAlarm(){
-        SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         SMSmessage = sharedPrefs1.getString(MESSAGE_SETTINGS, null);
-        pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
+        pNumber = sharedPrefs1.getString(CONTACT_SETTINGS, null);
 
         Log.i(TAG, "Message: " + SMSmessage);
         Log.i(TAG, "Number: " + pNumber);

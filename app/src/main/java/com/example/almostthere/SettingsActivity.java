@@ -153,11 +153,17 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-
+        /**
+         * Workings behind setting the miles for sending a message
+         */
         buttonSendSendWhen.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Changes the send SMS by distance variable
+             * @param view
+             */
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked set contact button");
+                Log.d(TAG, "onClick: clicked set send when distance");
                 if(sendWhenMiles == null || sendWhenMiles == " "){
                     sendWhenMiles = "";
                 }
@@ -173,10 +179,17 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Workings behind setting the message by distance
+         */
         buttonSetMessage1.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Changes the SMS by distance
+             * @param view
+             */
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked set contact button");
+                Log.d(TAG, "onClick: clicked set message by distance");
                 if(messageSetDist == null || messageSetDist == " "){
                     messageSetDist = "";
                 }
