@@ -141,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if(contactSet == null || contactSet == " "){
                     contactSet = "";
                 }
-                else{
+                else {
                     contactSet = setContact.getText().toString();
                     SharedPreferences prefs2 = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs2.edit();
@@ -167,7 +167,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if(sendWhenMiles == null || sendWhenMiles == " "){
                     sendWhenMiles = "";
                 }
-                else{
+
                     sendWhenMiles = setSendWhen.getText().toString();
                     SharedPreferences prefs2 = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs2.edit();
@@ -175,7 +175,6 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.apply();
                     Toast.makeText(SettingsActivity.this, "Send message when " + sendWhenMiles + " miles left to go.", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "Send when: " + sendWhenMiles);
-                }
             }
         });
 

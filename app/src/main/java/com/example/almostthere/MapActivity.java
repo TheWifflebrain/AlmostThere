@@ -77,6 +77,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public String SMSmessageDist = "";
     public String sendWhenDist = "";
     public Boolean canSendSMS = false;
+    public Boolean canSendSMSDist = false;
     public Boolean sendDistMessageOnce = false;
     public double sendWhenDistD;
 
@@ -115,6 +116,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setPin = findViewById(R.id.ic_set);
         breakPin = findViewById(R.id.ic_break);
         endPinGps = findViewById(R.id.ic_locateFinalDestination);
+
+        SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
+        sharedPrefs1.edit().remove(CONTACT_SETTINGS).commit();
+        sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
+        sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
+        sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
 
         if (isServicesOK()) {
             getLocationPermission();
@@ -264,6 +271,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     endDestination.getEndPoint().setLongitude(startLocation.getLongitude());
                     mMap.clear();
                     updateDistanceUI();
+                    sendDistMessageOnce = false;
                     TextView textView = findViewById(R.id.distanceLeft);
                     textView.setText("Ended Calculating Distance.\nRadius is set at: " + endDestination.getRadius() + " miles");
 
@@ -354,6 +362,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             textView.setText("Within radius. Alarm going off!\nIt took " + timeItTook);
             timerAT.timer.cancel();
             sendMessageAlarm();
+            sendDistMessageOnce = false;
 
             SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
             sharedPrefs1.edit().remove(CONTACT_SETTINGS).commit();
@@ -411,29 +420,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         pNumber = sharedPrefs2.getString(CONTACT_SETTINGS, null);
         sendWhenDist = sharedPrefs2.getString(SEND_WHEN_SETTINGS, null);
         SMSmessageDist = sharedPrefs2.getString(SEND_WHEN_MESSAGE_SETTINGS, null);
-        if(sendWhenDist != null){
+        if(sendWhenDist != null && sendWhenDist.length() != 0 && sendWhenDist != " "){
             sendWhenDistD = Double.parseDouble(sendWhenDist);
+        }
+        else{
+            canSendSMSDist = false;
+            return;
         }
 
         Log.i(TAG, "MessageDist: " + SMSmessageDist);
         Log.i(TAG, "NumberDist: " + pNumber);
 
         if(pNumber == null || pNumber.length() == 0 || SMSmessageDist == null ||
-                SMSmessageDist.length() == 0){
+                SMSmessageDist.length() == 0 || canSendSMSDist == false){
             return;
         }
 
 
         if(sendDistMessageOnce == false){
-            if(newDistance <= sendWhenDistD){
+            if(newDistance <= sendWhenDistD && (SMSmessageDist != null || SMSmessageDist.length() != 0)){
                 if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(pNumber, null, SMSmessageDist, null, null);
-                    Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Message by distance sent!", Toast.LENGTH_SHORT).show();
                     sendDistMessageOnce = true;
                 }
                 else{
-                    Toast.makeText(this, "Message Failed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Message by distance failed!", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -458,10 +471,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(pNumber, null, SMSmessage, null, null);
-            Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Message by radius sent!", Toast.LENGTH_SHORT).show();
         }
         else{
-            Toast.makeText(this, "Message Failed!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Message by radius failed!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -596,6 +609,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         String[] permissions = {Manifest.permission.SEND_SMS};
         if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
             canSendSMS = true;
+            canSendSMSDist = true;
         }
         else{
             ActivityCompat.requestPermissions(this,
