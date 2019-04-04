@@ -270,10 +270,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     endDestination.getEndPoint().setLatitude(startLocation.getLatitude());
                     endDestination.getEndPoint().setLongitude(startLocation.getLongitude());
                     mMap.clear();
-                    updateDistanceUI();
-                    sendDistMessageOnce = false;
-                    TextView textView = findViewById(R.id.distanceLeft);
-                    textView.setText("Ended Calculating Distance.\nRadius is set at: " + endDestination.getRadius() + " miles");
 
                     SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
                     SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
@@ -281,6 +277,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
                     sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
                     sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
+
+                    updateDistanceUI();
+                    sendDistMessageOnce = false;
+                    TextView textView = findViewById(R.id.distanceLeft);
+                    textView.setText("Ended Calculating Distance.\nRadius is set at: " + endDestination.getRadius() + " miles");
                 }
             }
         });
@@ -432,24 +433,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.i(TAG, "NumberDist: " + pNumber);
 
         if(pNumber == null || pNumber.length() == 0 || SMSmessageDist == null ||
-                SMSmessageDist.length() == 0 || canSendSMSDist == false){
+                SMSmessageDist.length() == 0 || sendDistMessageOnce == true ){
             return;
         }
 
-
-        if(sendDistMessageOnce == false){
-            if(newDistance <= sendWhenDistD && (SMSmessageDist != null || SMSmessageDist.length() != 0)){
-                if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
-                    SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(pNumber, null, SMSmessageDist, null, null);
-                    Toast.makeText(this, "Message by distance sent!", Toast.LENGTH_SHORT).show();
-                    sendDistMessageOnce = true;
-                }
-                else{
-                    Toast.makeText(this, "Message by distance failed!", Toast.LENGTH_SHORT).show();
-                }
+        if(newDistance <= sendWhenDistD){
+            if(checkPermissionSMS(Manifest.permission.SEND_SMS)){
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(pNumber, null, SMSmessageDist, null, null);
+                Toast.makeText(this, "Message by distance sent!", Toast.LENGTH_SHORT).show();
+                sendDistMessageOnce = true;
+            }
+            else{
+                Toast.makeText(this, "Message by distance failed!", Toast.LENGTH_SHORT).show();
             }
         }
+
     }
 
     /**
