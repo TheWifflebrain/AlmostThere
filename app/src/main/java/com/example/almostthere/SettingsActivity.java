@@ -29,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText setSendWhen;
     private Button buttonSetMessage1;
     private EditText setMessage1;
+    private Button buttonChooseContact;
 
     /** var to set radius */
     public String radiusSet = "";
@@ -56,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         setSendWhen = findViewById(R.id.sendWhenMiles);
         buttonSetMessage1 = findViewById(R.id.textSMSConfirmDist);
         setMessage1 = findViewById(R.id.messageSMS1);
+        buttonChooseContact = findViewById(R.id.buttonSetContact2);
 
         /**
          * The workings behind the back arrow button
@@ -201,6 +203,20 @@ public class SettingsActivity extends AppCompatActivity {
                     Toast.makeText(SettingsActivity.this, "Message by distance: " + messageSetDist + ".", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "Message by distance: " + messageSetDist);
                 }
+            }
+        });
+
+        buttonChooseContact.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Changes the SMS by distance
+             * @param view
+             */
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked choose contact button");
+                Intent intent2 = new Intent(SettingsActivity.this, ContactsActivity.class);
+                startActivity(intent2);
+
             }
         });
     }

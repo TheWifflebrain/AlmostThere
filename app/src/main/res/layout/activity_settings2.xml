@@ -54,7 +54,6 @@
         android:id="@+id/numberSMS"
         android:layout_width="142dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="99dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="16dp"
         android:hint="4242424242"
@@ -63,9 +62,7 @@
         android:singleLine="false"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/sendWhenMiles"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/txtContact" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/messageSMS"
@@ -144,24 +141,6 @@
 
 
     <TextView
-        android:id="@+id/txtContact"
-        android:layout_width="119dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="35dp"
-        android:layout_marginBottom="18dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Contact"
-        android:textAlignment="viewStart"
-        android:textColor="@color/cardview_dark_background"
-        android:textSize="30sp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/setDistSMS"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="TextViewEdits"
-        tools:text="Contact" />
-
-    <TextView
         android:id="@+id/setDistSMS"
         android:layout_width="167dp"
         android:layout_height="35dp"
@@ -207,6 +186,19 @@
         android:text="Set Contact"
         app:layout_constraintBottom_toTopOf="@+id/messageSMS1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonSetContact2"
+        android:layout_width="183dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="10dp"
+        android:text="Choose Contact"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/setDistSMS"
+        app:layout_constraintEnd_toStartOf="@+id/numberSMS"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
