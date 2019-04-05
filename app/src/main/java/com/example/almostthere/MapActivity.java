@@ -1,7 +1,9 @@
 package com.example.almostthere;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -395,7 +397,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public Boolean checkAlarm(){
         alarmGoingOff = distanceLocationATController.withinRadius(newDistance, endDestination.getRadius());
         if(alarmGoingOff == true){
+            Intent i = new Intent(MapActivity.this, Alarm.class);
 
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, i, 0);
+            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5,pendingIntent);
         }
         else{
 
