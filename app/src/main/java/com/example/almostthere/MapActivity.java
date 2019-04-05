@@ -414,7 +414,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.i(TAG, "radiusSP = "+ radiusSP);
 
         /** converting the string into a double */
-        if(radiusSP.equals("")){
+        if(radiusSP == null){
             radiusD = .25;
             String radiusString = ".25";
             SharedPreferences.Editor editor = sharedPrefs.edit();
