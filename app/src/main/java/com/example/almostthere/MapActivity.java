@@ -14,8 +14,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,7 +64,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ImageView startPinGps;
     private ImageView endPinGps;
     private ImageView breakPin;
-    private ImageView buttonSettings;
     private ImageView setPin;
     private TextView textView;
 
@@ -112,7 +115,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
 
         startPinGps = findViewById(R.id.ic_gsp);
-        buttonSettings = findViewById(R.id.settingsIV);
         setPin = findViewById(R.id.ic_set);
         breakPin = findViewById(R.id.ic_break);
         endPinGps = findViewById(R.id.ic_locateFinalDestination);
@@ -131,6 +133,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         TextView textView = findViewById(R.id.distanceLeft);
         getRadiusD();
         textView.setText("No pin set yet.\n" + "Radius is set at: " + endDestination.getRadius() + " miles");
+    }
+
+    /**
+     * Setting up the m.xml page as new toolbar
+     * @param menu
+     * @return if it can set up new toolbar
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.m, menu);
+        return true;
+    }
+
+    /**
+     * Knows which button you clicked on
+     * @param item essentially buttons listed in the m.xml
+     * @return
+     */
+    public boolean onOptionsItemSelected(MenuItem item){
+        int res_id = item.getItemId();
+        Log.d(TAG, "onClick: clicked settings icon");
+        if(res_id==R.id.settingsIV){
+            Intent intent = new Intent(MapActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        return true;
     }
 
     /**
@@ -174,22 +203,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     moveCamera(new LatLng(endDestination.getEndPoint().getLatitude(), endDestination.getEndPoint().getLongitude()),
                             DEFAULT_ZOOM, "Destination Location");
                 }
-            }
-        });
-
-        /**
-         * The working behinds of the icon that looks like a cog wheel.
-         */
-        buttonSettings.setOnClickListener(new View.OnClickListener() {
-            /**
-             * Goes to the settings activity.
-             * @param view
-             */
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked settings icon");
-                    Intent intent = new Intent(MapActivity.this, SettingsActivity.class);
-                    startActivity(intent);
             }
         });
 

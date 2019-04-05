@@ -16,6 +16,9 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +31,6 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = "SettingsActivity";
 
     /** vars for UI */
-    private ImageView buttonBack;
     private EditText setRadius;
     private Button buttonSetRadius;
     private Button buttonSetMessage;
@@ -64,7 +66,6 @@ public class SettingsActivity extends AppCompatActivity {
         readPermission();
 
         setContentView(R.layout.activity_settings2);
-        buttonBack = findViewById(R.id.backToMain);
         buttonSetRadius = findViewById(R.id.radius_button);
         setRadius = findViewById(R.id.txtRadius);
         buttonSetMessage = findViewById(R.id.textSMSConfirm);
@@ -82,24 +83,6 @@ public class SettingsActivity extends AppCompatActivity {
         String r = prefs.getString(MapActivity.RADIUS_SETTINGS, radiusSet);
         setRadius.setHint(r);
         setRadius.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.cardview_dark_background, null));
-
-        /**
-         * The workings behind the back arrow button
-         */
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            /**
-             * Loads the previous intent without the previous intent losing data
-             * @param view
-             */
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked settings icon");
-
-                Intent returnIntent = new Intent();
-                setResult(RESULT_CANCELED, returnIntent);
-                finish();
-            }
-        });
 
         /**
          * Workings behind the set radius button
@@ -253,6 +236,34 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivityForResult(intent, PICK_CONTACT);
             }
         });
+    }
+
+    /**
+     * Setting up the s.xml page as new toolbar
+     * @param menu
+     * @return if it can set up new toolbar
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.s, menu);
+        return true;
+    }
+
+    /**
+     * Knows which button you clicked on
+     * @param item essentially buttons listed in the m.xml
+     * @return
+     */
+    public boolean onOptionsItemSelected(MenuItem item){
+        int res_id = item.getItemId();
+        Log.d(TAG, "onClick: clicked back icon");
+        if(res_id==R.id.backToMain){
+            Intent returnIntent = new Intent();
+            setResult(RESULT_CANCELED, returnIntent);
+            finish();
+        }
+        return true;
     }
 
     /**
