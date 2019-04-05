@@ -12,7 +12,7 @@
         android:layout_height="56dp"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="4dp"
-        android:hint="0.25"
+        android:hint="0.25 mi"
         android:inputType="numberDecimal"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/radius_button"
@@ -28,7 +28,7 @@
         android:layout_height="41dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="4dp"
-        android:hint="15.0"
+        android:hint="15.0 mi"
         android:inputType="numberDecimal"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/buttonSetContact"
@@ -55,7 +55,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="72dp"
-        android:hint="I will be there soon! (Message2 by radius)"
+        android:hint="I will be there soon! (Radius Message)"
         android:inputType="textCapSentences|textMultiLine"
         android:maxLength="2000"
         android:maxLines="5"
@@ -73,7 +73,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="124dp"
-        android:hint="I will be there in 15 miles! (Message1 by distance)"
+        android:hint="I will be there in 15 miles! (Distance Message)"
         android:inputType="textCapSentences|textMultiLine"
         android:maxLength="2000"
         android:maxLines="5"
@@ -175,7 +175,7 @@
     <Button
         android:id="@+id/buttonSetContact2"
         android:layout_width="183dp"
-        android:layout_height="62dp"
+        android:layout_height="50dp"
         android:layout_marginStart="35dp"
         android:layout_marginEnd="31dp"
         android:layout_marginBottom="10dp"
@@ -204,13 +204,14 @@
         android:layout_marginTop="21dp"
         android:layout_marginEnd="23dp"
         android:layout_marginBottom="39dp"
-        android:text="Radius Message"
+        android:text="Set Radius Message"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textSMSConfirmDist"
         app:layout_constraintTop_toBottomOf="@+id/messageSMS"
-        app:layout_constraintVertical_bias="0.583" />
+        app:layout_constraintVertical_bias="0.583"
+        tools:text="Set Radius Message" />
 
     <Button
         android:id="@+id/textSMSConfirmDist"
@@ -220,13 +221,14 @@
         android:layout_marginTop="21dp"
         android:layout_marginEnd="3dp"
         android:layout_marginBottom="39dp"
-        android:text="Distance Message"
+        android:text="Set Distance Message"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/textSMSConfirm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/messageSMS"
-        app:layout_constraintVertical_bias="0.583" />
+        app:layout_constraintVertical_bias="0.583"
+        tools:text="Set Distance Message" />
 
 
 </android.support.constraint.ConstraintLayout>

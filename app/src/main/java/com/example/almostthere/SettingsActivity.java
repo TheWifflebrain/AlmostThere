@@ -81,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
         /** setting the hint for radius to the current radius variable */
         SharedPreferences prefs = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
         String r = prefs.getString(MapActivity.RADIUS_SETTINGS, radiusSet);
-        setRadius.setHint(r);
+        setRadius.setHint(r + " mi");
         setRadius.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.cardview_dark_background, null));
 
         /**
@@ -296,7 +296,7 @@ public class SettingsActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = prefs2.edit();
                         editor.putString(MapActivity.CONTACT_SETTINGS, cNumber);
                         editor.apply();
-                        setContact.setHint(cNumber);
+                        setContact.setHint(cNumber + " mi");
                         setContact.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.cardview_dark_background, null));
                     }
                     else{
