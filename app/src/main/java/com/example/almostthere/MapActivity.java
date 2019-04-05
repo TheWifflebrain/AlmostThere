@@ -401,8 +401,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.i(TAG, "radiusSP = "+ radiusSP);
 
         /** converting the string into a double */
-        if(radiusSP == null || radiusSP == ""){
+        if(radiusSP.equals("")){
             radiusD = .25;
+            String radiusString = ".25";
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putString(MapActivity.RADIUS_SETTINGS, radiusString);
+            editor.apply();
         }
         else{
             radiusS = radiusSP;

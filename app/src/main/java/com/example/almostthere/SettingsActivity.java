@@ -1,8 +1,18 @@
 package com.example.almostthere;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,12 +41,18 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText setMessage1;
     private Button buttonChooseContact;
 
+    /** vars for contacts */
+    private final int PICK_CONTACT = 1;
+    final int READ_CONTACTS_PERMISSION_REQUEST_CODE = 1;
+    Boolean canRead = false;
+
     /** var to set radius */
     public String radiusSet = "";
     public String messageSet = "";
     public String contactSet = "";
     public String messageSetDist = "";
     public String sendWhenMiles = "";
+    public String cNumber = "";
 
     /**
      * Creates the settings intent
@@ -45,6 +61,8 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        readPermission();
+
         setContentView(R.layout.activity_settings2);
         buttonBack = findViewById(R.id.backToMain);
         buttonSetRadius = findViewById(R.id.radius_button);
@@ -58,6 +76,12 @@ public class SettingsActivity extends AppCompatActivity {
         buttonSetMessage1 = findViewById(R.id.textSMSConfirmDist);
         setMessage1 = findViewById(R.id.messageSMS1);
         buttonChooseContact = findViewById(R.id.buttonSetContact2);
+
+        /** setting the hint for radius to the current radius variable */
+        SharedPreferences prefs = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
+        String r = prefs.getString(MapActivity.RADIUS_SETTINGS, radiusSet);
+        setRadius.setHint(r);
+        setRadius.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.cardview_dark_background, null));
 
         /**
          * The workings behind the back arrow button
@@ -89,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked changed radius");
                 radiusSet = setRadius.getText().toString();
-                if(radiusSet == null){
+                if(radiusSet.equals("")){
                     radiusSet = "0.25";
                 }
                 Log.i(TAG, "radius = " + radiusSet);
@@ -140,17 +164,26 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked set contact button");
-                if(contactSet == null || contactSet == " "){
+
+                SharedPreferences prefs2 = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs2.edit();
+
+                if(contactSet == null || contactSet == " " || cNumber.equals("")){
                     contactSet = "";
+                }
+
+                if(!cNumber.equals("")){
+                    editor.putString(MapActivity.CONTACT_SETTINGS, cNumber);
+                    editor.apply();
+                    Toast.makeText(SettingsActivity.this, "Your contact has been set!", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "Contact using cNumber: " + cNumber);
                 }
                 else {
                     contactSet = setContact.getText().toString();
-                    SharedPreferences prefs2 = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs2.edit();
                     editor.putString(MapActivity.CONTACT_SETTINGS, contactSet);
                     editor.apply();
                     Toast.makeText(SettingsActivity.this, "Your contact has been set!", Toast.LENGTH_SHORT).show();
-                    Log.i(TAG, "Contact: " + contactSet);
+                    Log.i(TAG, "Contact using contactSet: " + contactSet);
                 }
             }
         });
@@ -169,7 +202,6 @@ public class SettingsActivity extends AppCompatActivity {
                 if(sendWhenMiles == null || sendWhenMiles == " "){
                     sendWhenMiles = "";
                 }
-
                     sendWhenMiles = setSendWhen.getText().toString();
                     SharedPreferences prefs2 = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs2.edit();
@@ -206,6 +238,9 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Workings behind the choose contact button
+         */
         buttonChooseContact.setOnClickListener(new View.OnClickListener() {
             /**
              * Changes the SMS by distance
@@ -214,10 +249,79 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked choose contact button");
-                Intent intent2 = new Intent(SettingsActivity.this, ContactsActivity.class);
-                startActivity(intent2);
-
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, PICK_CONTACT);
             }
         });
     }
+
+    /**
+     * Pulling up the contacts list and retrieving the phone number from the contact selected
+     * @param reqCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int reqCode, int resultCode, Intent data){
+        Log.i(TAG, "Entered into retrieving contact data");
+        super.onActivityResult(reqCode, resultCode, data);
+
+        if(reqCode == PICK_CONTACT){
+            if(resultCode == Activity.RESULT_OK){
+                Uri contactData = data.getData();
+                Cursor c = getContentResolver().query(contactData, null, null, null, null);
+
+                if(c.moveToFirst()){
+                    String name = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+                    String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                    String hasNumber = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                    Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
+                    if(hasNumber.equalsIgnoreCase("1")){
+                        phones.moveToFirst();
+                        cNumber = phones.getString(phones.getColumnIndex("data1"));
+                        Log.i(TAG, "contact phone number is: " + cNumber);
+                        SharedPreferences prefs2 = getSharedPreferences(MapActivity.APP_PREFS, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs2.edit();
+                        editor.putString(MapActivity.CONTACT_SETTINGS, cNumber);
+                        editor.apply();
+                        setContact.setHint(cNumber);
+                        setContact.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.cardview_dark_background, null));
+                    }
+                    else{
+                        Toast.makeText(this, "No number associated with the contact", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Toast.makeText(this, "You picked " + name, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    /**
+     * Making sure the permissions is good
+     */
+    private void readPermission(){
+        Log.d(TAG, "getSendSMSPermission: getting sms permissions");
+        String[] permissions = {Manifest.permission.READ_CONTACTS};
+        if(checkPermissionContacts(Manifest.permission.READ_CONTACTS)){
+            canRead = true;
+        }
+        else{
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    READ_CONTACTS_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    /**
+     * Checks if permissions for reading contacts is ok
+     * @param permission the permissions string
+     * @return if permissions is either granted or not
+     */
+    public boolean checkPermissionContacts(String permission){
+        int check = ContextCompat.checkSelfPermission(this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
+    }
+
 }
