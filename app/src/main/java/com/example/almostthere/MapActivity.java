@@ -287,17 +287,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     timerAT.timer.cancel();
                     newDistance = 0.0;
                     options = null;
-                    endDestination.getEndPoint().setLatitude(startLocation.getLatitude());
-                    endDestination.getEndPoint().setLongitude(startLocation.getLongitude());
+//                    endDestination.getEndPoint().setLatitude(startLocation.getLatitude());
+//                    endDestination.getEndPoint().setLongitude(startLocation.getLongitude());
                     mMap.clear();
 
                     SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
                     SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-                    sharedPrefs2.edit().remove(CONTACT_SETTINGS).commit();
-                    sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
-                    sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
-                    sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
+                    sharedPrefs2.edit().remove(CONTACT_SETTINGS).apply();
+                    sharedPrefs1.edit().remove(MESSAGE_SETTINGS).apply();
+                    sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).apply();
+                    sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).apply();
 
+                    alarmGoingOff = false;
                     updateDistanceUI();
                     sendDistMessageOnce = false;
                     TextView textView = findViewById(R.id.distanceLeft);
@@ -347,7 +348,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Checks to see if the alarm is suppose to go off
      */
     public void updateDistanceUI(){
-        newDistance =  updateDistance();
+        newDistance = updateDistance();
+
         String stringDistance = String.format("%.3f", newDistance);
         sendMessage();
         textView = findViewById(R.id.distanceLeft);
@@ -378,18 +380,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         alarmGoingOff = alarm;
 
         alarmGoingOff = checkAlarm();
-        if(alarmGoingOff == true){
+        if(alarmGoingOff){
             timeItTook = timerAT.timeItTookLength;
             textView.setText("Within radius. Alarm going off!\nIt took " + timeItTook);
             timerAT.timer.cancel();
             sendMessageAlarm();
             sendDistMessageOnce = false;
+            alarmGoingOff = false;
 
             SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-            sharedPrefs1.edit().remove(CONTACT_SETTINGS).commit();
-            sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
-            sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
-            sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
+            sharedPrefs1.edit().remove(CONTACT_SETTINGS).apply();
+            sharedPrefs1.edit().remove(MESSAGE_SETTINGS).apply();
+            sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).apply();
+            sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).apply();
         }
     }
 
@@ -398,9 +401,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     public Boolean checkAlarm(){
         alarmGoingOff = distanceLocationATController.withinRadius(newDistance, endDestination.getRadius());
-        if(alarmGoingOff == true){
+        if(alarmGoingOff){
             Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-
 
             if (alert == null) {
                 alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -413,7 +415,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             ringtone = RingtoneManager.getRingtone(MapActivity.this, alert);
             ringtone.play();
 
-
             AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
             builder.setCancelable(true);
             builder.setTitle("Alarm");
@@ -424,15 +425,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     Log.i(TAG, "Inside onClick in checkAlarm");
                     ringtone.stop();
                     dialog.cancel();
+                    alarmGoingOff = false;
                 }
 
             });
             builder.show();
-
         }
-
-
-
         return alarmGoingOff;
     }
 
@@ -483,7 +481,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.i(TAG, "NumberDist: " + pNumber);
 
         if(pNumber == null || pNumber.length() == 0 || SMSmessageDist == null ||
-                SMSmessageDist.length() == 0 || sendDistMessageOnce == true ){
+                SMSmessageDist.length() == 0 || sendDistMessageOnce){
             return;
         }
 
@@ -513,7 +511,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.i(TAG, "Number: " + pNumber);
 
         if(pNumber == null || pNumber.length() == 0 || SMSmessage == null ||
-                SMSmessage.length() == 0 || canSendSMS == false){
+                SMSmessage.length() == 0 || !canSendSMS){
             return;
         }
 
@@ -556,7 +554,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             startLocation.setLongitude(currentLocation.getLongitude());
                             startLocation.setLatitude(currentLocation.getLatitude());
 
-                            if(setCamera == true) {
+                            if(setCamera) {
                                 moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                         DEFAULT_ZOOM,
                                         "My Location");
