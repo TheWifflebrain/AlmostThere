@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 
 public class LocationATControllerTest {
 
+    /**
+     * Checks if the withinRadius function works as it should
+     */
     @Test
     public void withinRadius() {
         LocationATController test = new LocationATController();
@@ -14,6 +17,9 @@ public class LocationATControllerTest {
         assertEquals(result, false);
     }
 
+    /**
+     * Checks if the withinRadius function works as it should
+     */
     @Test
     public void withinRadius2() {
         LocationATController test2 = new LocationATController();
@@ -23,6 +29,9 @@ public class LocationATControllerTest {
         assertEquals(result2, true);
     }
 
+    /**
+     * Checks if the calculationByDistance() function works as it should
+     */
     @Test
     public void calculationByDistance() {
         LocationATController test3 = new LocationATController();
