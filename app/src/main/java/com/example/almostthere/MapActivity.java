@@ -2,13 +2,18 @@ package com.example.almostthere;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -386,9 +391,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
             sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
         }
-        else{
-
-        }
     }
 
     /**
@@ -397,15 +399,40 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public Boolean checkAlarm(){
         alarmGoingOff = distanceLocationATController.withinRadius(newDistance, endDestination.getRadius());
         if(alarmGoingOff == true){
-            Intent i = new Intent(MapActivity.this, Alarm.class);
+            Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, i, 0);
-            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5,pendingIntent);
-        }
-        else{
+
+            if (alert == null) {
+                alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                if (alert == null)
+                    alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            }
+
+            final Ringtone ringtone;
+            ringtone = RingtoneManager.getRingtone(MapActivity.this, alert);
+            ringtone.play();
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+            builder.setCancelable(true);
+            builder.setTitle("Alarm");
+            Log.i(TAG, "Inside check alarm2");
+            builder.setNegativeButton("Dismiss Alarm", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i(TAG, "Inside onClick in checkAlarm");
+                    ringtone.stop();
+                    dialog.cancel();
+                }
+
+            });
+            builder.show();
 
         }
+
+
+
         return alarmGoingOff;
     }
 

@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.media.Ringtone;
 
 public class Alarm extends BroadcastReceiver {
+    public Ringtone ringtone;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Wake UP!!!!!", Toast.LENGTH_LONG).show();
@@ -23,8 +25,10 @@ public class Alarm extends BroadcastReceiver {
                 alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         }
 
-        Ringtone ringtone = RingtoneManager.getRingtone(context, alert);
+        ringtone = RingtoneManager.getRingtone(context, alert);
         ringtone.play();
-
     }
+
+
+
 }
