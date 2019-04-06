@@ -1,10 +1,8 @@
 package com.example.almostthere;
 
 import android.Manifest;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,7 +19,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
@@ -114,7 +111,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * This function creates all the items that are displayed on the screen
      * such as the buttons, textViews, and displays your current location if
      * google maps services are okay
-     * @param savedInstanceState
+     * @param savedInstanceState saved instance state
      */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,10 +124,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         endPinGps = findViewById(R.id.ic_locateFinalDestination);
 
         SharedPreferences sharedPrefs1 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
-        sharedPrefs1.edit().remove(CONTACT_SETTINGS).commit();
-        sharedPrefs1.edit().remove(MESSAGE_SETTINGS).commit();
-        sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).commit();
-        sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).commit();
+        sharedPrefs1.edit().remove(CONTACT_SETTINGS).apply();
+        sharedPrefs1.edit().remove(MESSAGE_SETTINGS).apply();
+        sharedPrefs1.edit().remove(SEND_WHEN_SETTINGS).apply();
+        sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).apply();
 
         if (isServicesOK()) {
             getLocationPermission();
@@ -144,7 +141,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     /**
      * Setting up the m.xml page as new toolbar
-     * @param menu
+     * @param menu taskbar
      * @return if it can set up new toolbar
      */
     @Override
@@ -157,7 +154,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     /**
      * Knows which button you clicked on
      * @param item essentially buttons listed in the m.xml
-     * @return
+     * @return true item was selected
      */
     public boolean onOptionsItemSelected(MenuItem item){
         int res_id = item.getItemId();
@@ -183,7 +180,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         startPinGps.setOnClickListener(new View.OnClickListener() {
             /**
              * Moves the camera to current location and gets the location of the device.
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -200,7 +197,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             /**
              * Moves the camera to the end destination and discontinues updating the camera
              * to current location.
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -220,7 +217,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             /**
              * Creates a pin at the location where you longed clicked and sets the latitude and
              * longitude of that marker.
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onMapLongClick(LatLng view) {
@@ -253,7 +250,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             /**
              * Updates the distance repeatedly when clicked unless there is no marker or
              * if distance is less than radius.
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -278,7 +275,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         breakPin.setOnClickListener(new View.OnClickListener() {
             /**
              * Ends updating distance, deletes the pin, and resets the latitude and longitude.
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -287,8 +284,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     timerAT.timer.cancel();
                     newDistance = 0.0;
                     options = null;
-//                    endDestination.getEndPoint().setLatitude(startLocation.getLatitude());
-//                    endDestination.getEndPoint().setLongitude(startLocation.getLongitude());
                     mMap.clear();
 
                     SharedPreferences sharedPrefs2 = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
@@ -299,7 +294,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     sharedPrefs1.edit().remove(SEND_WHEN_MESSAGE_SETTINGS).apply();
 
                     alarmGoingOff = false;
-                    updateDistanceUI();
                     sendDistMessageOnce = false;
                     TextView textView = findViewById(R.id.distanceLeft);
                     textView.setText("Ended Calculating Distance.\nRadius is set at: " + endDestination.getRadius() + " miles");
@@ -321,7 +315,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             /** Only updates the distance if the distance between pins are significant */
             if(newDistance > 0.001) {
-                if(setMoveToCurrentLocation == true){
+                if(setMoveToCurrentLocation){
                     getDeviceLocation(setCamera = true);
                 }
                 else{
@@ -420,6 +414,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             builder.setTitle("Alarm");
             Log.i(TAG, "Inside check alarm2");
             builder.setNegativeButton("Dismiss Alarm", new DialogInterface.OnClickListener() {
+                /**
+                 * An Alert that allows you to stop the alarm.
+                 * @param dialog Object of type DialogInterface
+                 * @param which Unused
+                 */
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Log.i(TAG, "Inside onClick in checkAlarm");
@@ -427,7 +426,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     dialog.cancel();
                     alarmGoingOff = false;
                 }
-
             });
             builder.show();
         }
@@ -436,7 +434,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     /**
      * Gets the radius from the settings page and converts it from a string to a double.
-     * @return the radius in the type of double
      */
     public void getRadiusD(){
         /** Getting the radius from the settings page */
@@ -496,7 +493,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Toast.makeText(this, "Message by distance failed!", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     /**

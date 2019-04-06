@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -22,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -58,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     /**
      * Creates the settings intent
-     * @param savedInstanceState
+     * @param savedInstanceState the previous Intent without data loss
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
         buttonSetRadius.setOnClickListener(new View.OnClickListener() {
             /**
              * Changes the radius when the user updates it
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -116,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity {
         buttonSetMessage.setOnClickListener(new View.OnClickListener() {
             /**
              * Changes the radius when the user updates it
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -142,7 +140,7 @@ public class SettingsActivity extends AppCompatActivity {
         buttonSetContact.setOnClickListener(new View.OnClickListener() {
             /**
              * Changes the radius when the user updates it
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -177,7 +175,7 @@ public class SettingsActivity extends AppCompatActivity {
         buttonSendSendWhen.setOnClickListener(new View.OnClickListener() {
             /**
              * Changes the send SMS by distance variable
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -227,7 +225,7 @@ public class SettingsActivity extends AppCompatActivity {
         buttonChooseContact.setOnClickListener(new View.OnClickListener() {
             /**
              * Changes the SMS by distance
-             * @param view
+             * @param view the UI
              */
             @Override
             public void onClick(View view) {
@@ -240,7 +238,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     /**
      * Setting up the s.xml page as new toolbar
-     * @param menu
+     * @param menu toolbar
      * @return if it can set up new toolbar
      */
     @Override
@@ -253,7 +251,7 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * Knows which button you clicked on
      * @param item essentially buttons listed in the m.xml
-     * @return
+     * @return option was selected
      */
     public boolean onOptionsItemSelected(MenuItem item){
         int res_id = item.getItemId();
@@ -268,9 +266,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     /**
      * Pulling up the contacts list and retrieving the phone number from the contact selected
-     * @param reqCode
-     * @param resultCode
-     * @param data
+     * @param reqCode the request code to access contacts
+     * @param resultCode the result code
+     * @param data the intent data
      */
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data){
