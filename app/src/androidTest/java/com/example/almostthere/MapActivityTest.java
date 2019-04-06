@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 public class MapActivityTest {
 
     /**
-     * This is the first half of the checkAlarm() in the MapActiviy
+     * This is the first half of the checkAlarm() in the MapActivity
      * Could only test the first half so that is why Boolean result = test.checkAlarm();
      * was not used.
      * Should return false for both
@@ -32,7 +32,7 @@ public class MapActivityTest {
     }
 
     /**
-     * This is the first half of the checkAlarm() in the MapActiviy
+     * This is the first half of the checkAlarm() in the MapActivity
      * Could only test the first half so that is why Boolean result = test.checkAlarm();
      * was not used.
      * Should return true for both
