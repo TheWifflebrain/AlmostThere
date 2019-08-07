@@ -1,6 +1,7 @@
 package com.example.almostthere;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.PowerManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -58,9 +60,12 @@ public class SettingsActivity extends AppCompatActivity {
      * Creates the settings intent
      * @param savedInstanceState the previous Intent without data loss
      */
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         readPermission();
 
         setContentView(R.layout.activity_settings2);
@@ -235,6 +240,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * Setting up the s.xml page as new toolbar

@@ -1,6 +1,8 @@
 package com.example.almostthere;
 
 import android.Manifest;
+import android.accessibilityservice.AccessibilityService;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -14,6 +16,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -107,16 +110,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     TimerATController timerAT = new TimerATController();
     String timeItTook = "";
 
+    public PowerManager.WakeLock wakeLock;
+
     /**
      * This function creates all the items that are displayed on the screen
      * such as the buttons, textViews, and displays your current location if
      * google maps services are okay
      * @param savedInstanceState saved instance state
      */
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "partialWakeLock");
+        wakeLock.acquire();
 
         startPinGps = findViewById(R.id.ic_gsp);
         setPin = findViewById(R.id.ic_set);
@@ -138,6 +150,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         getRadiusD();
         textView.setText("No pin set yet.\n" + "Radius is set at: " + endDestination.getRadius() + " miles");
     }
+
+    /*
+    @Override
+    protected void onPause() {
+        super.onPause();
+        wakeLock.release();
+    }//End of onPause
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        wakeLock.acquire();
+    }//End of onResume
+    */
 
     /**
      * Setting up the m.xml page as new toolbar
