@@ -166,13 +166,12 @@
         android:layout_height="46dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="17dp"
-        android:layout_marginBottom="68dp"
         android:text="Choose Contact"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/setDistSMS"
         app:layout_constraintEnd_toStartOf="@+id/numberSMS"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="254dp" />
 
     <Button
         android:id="@+id/buttonSetSendWhen"
