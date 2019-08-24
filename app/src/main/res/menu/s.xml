@@ -6,6 +6,6 @@
     <item
         android:id="@+id/backToMain"
         android:icon="@drawable/ic_back_white"
-        android:title="Back"
+        android:title="@string/back"
         app:showAsAction="always" />
 </menu>

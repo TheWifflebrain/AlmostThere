@@ -14,4 +14,6 @@
     <string name="txtSetTxtDist">Set Text Distance</string>
     <string name="txtSetRadM">Set Radius Message</string>
     <string name="txtSetDistM">Set Distance Message</string>
+    <string name="back">Back</string>
+    <string name="settings">Settings</string>
 </resources>
