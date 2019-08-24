@@ -2,4 +2,16 @@
     <string name="app_name">Almost There</string>
     <string name="choose_alarm">Choose Alarm</string>
     <string name="choose_radius">Choose Radius</string>
+    <string name="distance">Distance</string>
+    <string name="exampletxtRadius">0.25 mi</string>
+    <string name="exampletxtSendMiles">15.0 mi</string>
+    <string name="exampleSMS1">I will be there in 15 miles! (Distance Message)</string>
+    <string name="exampletxtDistSMS">Set Text Distance</string>
+    <string name="exampleRadiusSMS">I will be there soon! (Radius Message)</string>
+    <string name="txtSet">Set</string>
+    <string name="txtSetContact">Set Contact</string>
+    <string name="txtChooseContact">Choose Contact</string>
+    <string name="txtSetTxtDist">Set Text Distance</string>
+    <string name="txtSetRadM">Set Radius Message</string>
+    <string name="txtSetDistM">Set Distance Message</string>
 </resources>
