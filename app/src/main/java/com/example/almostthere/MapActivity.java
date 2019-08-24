@@ -1,7 +1,6 @@
 package com.example.almostthere;
 
 import android.Manifest;
-import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -110,8 +109,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     TimerATController timerAT = new TimerATController();
     String timeItTook = "";
 
-    public PowerManager.WakeLock wakeLock;
-
     /**
      * This function creates all the items that are displayed on the screen
      * such as the buttons, textViews, and displays your current location if
@@ -128,6 +125,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "partialWakeLock");
+        /*did not provide wakeLock timer to make sure a trip is not longer than the trip */
         wakeLock.acquire();
 
         startPinGps = findViewById(R.id.ic_gsp);
@@ -150,20 +148,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         getRadiusD();
         textView.setText("No pin set yet.\n" + "Radius is set at: " + endDestination.getRadius() + " miles");
     }
-
-    /*
-    @Override
-    protected void onPause() {
-        super.onPause();
-        wakeLock.release();
-    }//End of onPause
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        wakeLock.acquire();
-    }//End of onResume
-    */
 
     /**
      * Setting up the m.xml page as new toolbar
@@ -200,8 +184,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void init() {
         Log.d(TAG, "init: initializing");
 
-        /**
-         * The working behinds of the icon that looks like a GPS.
+        /*
+          The working behinds of the icon that looks like a GPS.
          */
         startPinGps.setOnClickListener(new View.OnClickListener() {
             /**
@@ -216,8 +200,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        /**
-         * The working behinds of the icon that looks like a pin or marker
+        /*
+          The working behinds of the icon that looks like a pin or marker
          */
         endPinGps.setOnClickListener(new View.OnClickListener() {
             /**
@@ -236,8 +220,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        /**
-         * The working behinds of creating a destination pin by long clicking on the screen.
+        /*
+          The working behinds of creating a destination pin by long clicking on the screen.
          */
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             /**
@@ -269,8 +253,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        /**
-         * The working behinds of the icon that looks like a double check mark.
+        /*
+          The working behinds of the icon that looks like a double check mark.
          */
         setPin.setOnClickListener(new View.OnClickListener() {
             /**
@@ -295,8 +279,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        /**
-         * The working behinds of the icon that looks a minus sign inside a circle
+        /*
+          The working behinds of the icon that looks a minus sign inside a circle
          */
         breakPin.setOnClickListener(new View.OnClickListener() {
             /**
@@ -333,13 +317,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     private Runnable runnable = new Runnable() {
         @Override
-        /**
-         * Checks to see when updating the distance and UI should be called.
+        /*
+          Checks to see when updating the distance and UI should be called.
          */
         public void run() {
             Log.i(TAG, "In the new runnable new distance: " + newDistance);
 
-            /** Only updates the distance if the distance between pins are significant */
+            /* Only updates the distance if the distance between pins are significant */
             if(newDistance > 0.001) {
                 if(setMoveToCurrentLocation){
                     getDeviceLocation(setCamera = true);
@@ -350,7 +334,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 updateDistanceUI();
 
-                /** repeating updates if the distance between pins is greater than the radius */
+                /* repeating updates if the distance between pins is greater than the radius */
                 if(newDistance > endDestination.getRadius()) {
                     Log.d(TAG, "repeating updating the distance in runnable");
                     handler.postDelayed(this, 500);
@@ -557,7 +541,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        /** checking if you can access current location */
+        /* checking if you can access current location */
         try {
             if (mLocationPermissionsGranted) {
 
@@ -656,11 +640,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapActivity.this);
 
         if (available == ConnectionResult.SUCCESS) {
-            /** everything is fine and the user can make map requests */
+            /* everything is fine and the user can make map requests */
             Log.d(TAG, "isServicesOK: Google Play Services is working");
             return true;
         } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
-            /** an error occurred but we can resolve it */
+            /* an error occurred but we can resolve it */
             Log.d(TAG, "isServicesOK: an error occurred but we can fix it");
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MapActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
@@ -736,7 +720,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
-                /** permission was granted */
+                /* permission was granted */
                 if (grantResults.length > 0) {
                     for (int i = 0; i < grantResults.length; i++) {
                         if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
