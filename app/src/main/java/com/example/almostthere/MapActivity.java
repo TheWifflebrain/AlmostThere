@@ -288,7 +288,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     timerAT.timer.start();
                     if (newDistance > 0.001 && newDistance > endDestination.getRadius()) {
-                        handler.postDelayed(runnable, 500);
+                        handler.postDelayed(runnable, 250);
                     }
                     else{
                         Log.d(TAG, "Stopped repeating updating distance in setPin");
@@ -355,7 +355,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 /* repeating updates if the distance between pins is greater than the radius */
                 if(newDistance > endDestination.getRadius()) {
                     Log.d(TAG, "repeating updating the distance in runnable");
-                    handler.postDelayed(this, 500);
+                    handler.postDelayed(this, 250);
                 }
                 else{
                     Log.d(TAG, "stopped updating the distance in runnable");
@@ -378,6 +378,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         textView.setText("Distance left to go: " + stringDistance + " miles\nRadius is set at: " + endDestination.getRadius() + " miles");
 
         Log.i(TAG, "radiusMapAct = " + endDestination.getRadius());
+        Log.d(TAG, "updateDistanceUI");
 
         updateAlarmUI(alarmGoingOff);
     }
@@ -390,6 +391,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         newDistance = distanceLocationATController.calculationByDistance(startLocation.getLatitude(), startLocation.getLongitude(), endDestination.getEndPoint().getLatitude(), endDestination.getEndPoint().getLongitude());
         getRadiusD();
         Log.i(TAG, "radiusMapAct = " + endDestination.getRadius());
+        Log.d(TAG, "updateDistance");
 
         return newDistance;
     }
@@ -468,6 +470,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         SharedPreferences sharedPrefs = getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE);
         String radiusSP = sharedPrefs.getString(RADIUS_SETTINGS, null);
         Log.i(TAG, "radiusSP = "+ radiusSP);
+        Log.d(TAG, "getRadiusD");
 
         /** converting the string into a double */
         if(radiusSP == null){

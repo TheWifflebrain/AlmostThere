@@ -21,10 +21,12 @@ public class MyLocationService extends BroadcastReceiver {
                 LocationResult result = LocationResult.extractResult(intent);
                 if(result != null){
 
-                    Location location = result.getLastLocation();
+                    //Location location = result.getLastLocation();
 
                     try{
                         MapActivity.getInstance().getDeviceLocation(true);
+                        MapActivity.getInstance().updateDistanceUI();
+                        MapActivity.getInstance().updateDistance();
 
 
                     }catch(Exception e){
