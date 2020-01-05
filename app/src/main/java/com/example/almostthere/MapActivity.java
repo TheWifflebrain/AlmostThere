@@ -138,11 +138,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         instance=this;
 
+        /*
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "partialWakeLock");
         /*did not provide wakeLock timer to make sure a trip is not longer than the trip */
-        wakeLock.acquire();
+        //wakeLock.acquire();
+
 
 
         startPinGps = findViewById(R.id.ic_gsp);
