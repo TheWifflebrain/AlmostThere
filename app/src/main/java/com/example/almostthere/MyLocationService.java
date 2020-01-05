@@ -27,7 +27,9 @@ public class MyLocationService extends BroadcastReceiver {
                         MapActivity.getInstance().getDeviceLocation(true);
                         MapActivity.getInstance().updateDistanceUI();
                         MapActivity.getInstance().updateDistance();
-                        MapActivity.getInstance().checkAlarm();
+                        boolean alarm = MapActivity.getInstance().checkAlarm();
+                        MapActivity.getInstance().updateAlarmUI(alarm);
+
 
 
                     }catch(Exception e){
