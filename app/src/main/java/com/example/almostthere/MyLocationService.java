@@ -1,11 +1,8 @@
 package com.example.almostthere;
 
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.os.IBinder;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationResult;
@@ -21,16 +18,12 @@ public class MyLocationService extends BroadcastReceiver {
                 LocationResult result = LocationResult.extractResult(intent);
                 if(result != null){
 
-                    //Location location = result.getLastLocation();
-
                     try{
                         MapActivity.getInstance().getDeviceLocation(true);
                         MapActivity.getInstance().updateDistanceUI();
                         MapActivity.getInstance().updateDistance();
                         boolean alarm = MapActivity.getInstance().checkAlarm();
                         MapActivity.getInstance().updateAlarmUI(alarm);
-
-
 
                     }catch(Exception e){
                         Log.d("LocationService", "MyLocationService not working");

@@ -10,14 +10,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -38,10 +35,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -116,8 +110,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static final String SEND_WHEN_SETTINGS = "SEND_WHEN_SETTINGS";
     public static final String SEND_WHEN_MESSAGE_SETTINGS = "SEND_WHEN_MESSAGE_SETTINGS";
 
-    private LocationCallback locationCallback;
-
     /** vars for timer */
     TimerATController timerAT = new TimerATController();
     String timeItTook = "";
@@ -137,15 +129,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
 
         instance=this;
-
-        /*
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                "partialWakeLock");
-        /*did not provide wakeLock timer to make sure a trip is not longer than the trip */
-        //wakeLock.acquire();
-
-
 
         startPinGps = findViewById(R.id.ic_gsp);
         setPin = findViewById(R.id.ic_set);
